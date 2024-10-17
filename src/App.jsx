@@ -68,7 +68,7 @@ const App = () => {
           <Route path={ScorePath.PERFECT_SCORE} element={<PerfectScore />} />
           <Route path={MisfirePath.MISFIRE} element={<Misfire />} />
 
-          <Route path='*' element={<NotFound />} />
+          {/* <Route path='*' element={<NotFound />} /> */}
         </Route>
 
       </Routes>
