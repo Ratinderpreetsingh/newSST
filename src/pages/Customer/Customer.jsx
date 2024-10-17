@@ -27,7 +27,7 @@ const handleSearch=(e)=>{
   return (
     <div className="content-container">
 
-      <h1><i className="bi bi-speedometer2"></i>Customer</h1>
+      <h1><i className="bi bi-speedometer2 "></i>Customer</h1>
       <div className="container-area mt-5">
         <div className="row">
           <div className="col-lg-12">
