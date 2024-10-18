@@ -1,4 +1,5 @@
 import { getCookie } from "../../utils/Cookies";
+import Customer from "./Comp/Customer";
 
 const Dashboard = () => {
   const res= getCookie('auth')
@@ -485,7 +486,8 @@ const Dashboard = () => {
           </div>
 
           <div className="row">
-            <div className="col-lg-12">
+          <Customer/>
+            {/* <div className="col-lg-12">
               <div className="card">
                 <div className="card-header">
                   <h5 className="">Customer</h5>
@@ -782,7 +784,7 @@ const Dashboard = () => {
                   <button className="btn btn-danger">View All</button>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -6,8 +6,12 @@ export const AUTH = {
 
   };
   
+// dashboard
+export const DASHBOARD = {
+  LIST_DAS_CUSTOMERS: "v1/customer-list", 
 
 
+};
   // customer
 
 
@@ -16,4 +20,11 @@ export const AUTH = {
  
 
   };
+
+  // shps
+
+  export const SHOPS ={
+    LIST_SHOPS :"v1/shop-list"
+  }
   
+

@@ -1,8 +1,8 @@
 import { useSelector } from "react-redux";
-import Pagination from "../../CustomUi/Pagination";
-import { useGetAllCustomersQuery } from "../../redux/QueryAPi/customer";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Pagination from "../../../CustomUi/Pagination";
+import { useGetALLdashboardcustomersQuery } from "../../../redux/QueryAPi/dashboard";
 
 const Customer = () => {
   const [currentPage, setCurrentPage] = useState(1); // Local state for ComponentA
@@ -18,7 +18,7 @@ const handleSearch=(e)=>{
   setSearch(e.target.value)
 
 }
-  const { data: allCustomers, isError, isLoading, isSuccess } = useGetAllCustomersQuery({page:currentPage, delivery_date:delivery_date,status:status,search:search});
+  const { data: allCustomers, isError, isLoading, isSuccess } = useGetALLdashboardcustomersQuery({page:currentPage, delivery_date:delivery_date,status:status,search:search});
 
   useEffect(() => {
     // If you want to do something with allCustomers, handle it here

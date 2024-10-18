@@ -1,5 +1,5 @@
 import './App.css';
-import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard/Dashboard.jsx';
 import Customer from './pages/Customer/Customer.jsx';
 import Login from './auth/Login';
@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux';
 import { AuthPath, CustomerPath, DashboardPath, DefinitionPath, EventsPath, HotspotPath, IssuesPath, MisfirePath, ScorePath, ShopPath, SurveysPath } from './Constant/Pages_Routes.jsx';
 import AuthCommon from './auth/AuthCommon.jsx';
 import ForgotPassword from './auth/ForgotPassword.jsx';
-import { Component, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getCookie } from './utils/Cookies.jsx';
 import ProtectedRoutes from './Guards/ProtectedRoutes.jsx';
 import NotFound from './pages/NotFound/NotFound.jsx';
@@ -30,28 +30,38 @@ import VerifyOtp from './auth/VerifyOtp.jsx';
 import Layout from './common/Layout.jsx';
 
 const App = () => {
-  const [isAuthenticated,setAuthenticated] = useState('')
- useEffect(()=>{
-   setAuthenticated(getCookie('token'))
- },[])
- console.log(isAuthenticated)
+  const [isAuthenticated, setAuthenticated] = useState(null);
+
+  useEffect(() => {
+    const token = getCookie('token');
+    setAuthenticated(!!token);  // setAuthenticated as true if token exists, false otherwise
+  }, []);
+
+  if (isAuthenticated === null) {
+    // Optionally, you could show a loading spinner here while checking for authentication
+    return null;
+  }
+
   return (
     <>
-    <ToastContainer/>
+      <ToastContainer />
       <Routes>
-      <Route path='/' element={<Navigate to={isAuthenticated ? "/dashboard" : "/auth/login"} replace />} />
+        {/* Redirect based on the presence of the token */}
+        <Route
+          path="/"
+          element={<Navigate to={isAuthenticated ? "/dashboard" : "/auth/login"} replace />}
+        />
 
-
-        <Route path="/auth"  element={<AuthCommon />}>
+        {/* Authentication Routes */}
+        <Route path="/auth" element={<AuthCommon />}>
           <Route index path={AuthPath.LOGIN} element={<Login />} />
           <Route path="forgot" element={<ForgotPassword />} />
           <Route path="changepassword" element={<ChangePassword />} />
           <Route path="verify-otp" element={<VerifyOtp />} />
-
-
         </Route>
 
-        <Route path="*" element={<ProtectedRoutes><Layout /></ProtectedRoutes> }>
+        {/* Protected Routes (Require Authentication) */}
+        <Route path="*" element={<ProtectedRoutes><Layout /></ProtectedRoutes>}>
           <Route index path={DashboardPath.DASHBOARD} element={<Dashboard />} />
           <Route path={CustomerPath.CUSTOMER} element={<Customer />} />
           <Route path={ShopPath.ADD_SHOP} element={<AddShop />} />
@@ -68,12 +78,12 @@ const App = () => {
           <Route path={ScorePath.PERFECT_SCORE} element={<PerfectScore />} />
           <Route path={MisfirePath.MISFIRE} element={<Misfire />} />
 
+          {/* Optional Not Found Page */}
           {/* <Route path='*' element={<NotFound />} /> */}
         </Route>
-
       </Routes>
     </>
   );
-}
+};
 
 export default App;
