@@ -89,6 +89,7 @@ import { otpValidation } from '../Validation/auth';
 import { getCookie, setCookie } from '../utils/Cookies';
 import { useOtpMutation } from '../redux/QueryAPi/auth';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const VerifyOtp = () => {
     const navigate = useNavigate();
@@ -102,18 +103,17 @@ const VerifyOtp = () => {
     const formik = useFormik({
         initialValues,
         validationSchema: otpValidation,
-        onSubmit: async (values, { resetForm }) => {
-            await otp(values);
-            resetForm();
+        onSubmit: async (values, { setFieldError, resetForm }) => {
+            try {
+                await otp(values).unwrap();
+                resetForm();
+            } catch (error) {
+                // Handle error response
+                setFieldError('otp', 'Invalid OTP');
+                toast.error("Invalid OTP");
+            }
         },
     });
-
-    useEffect(() => {
-        if (isError) {
-            alert("Invalid OTP. Please try again.");
-        }
-    }, [isError]);
-
     useEffect(() => {
         if (isSuccess && data?.result) {
             setCookie('token', data?.access_token);
@@ -165,3 +165,4 @@ const VerifyOtp = () => {
 };
 
 export default VerifyOtp;
+

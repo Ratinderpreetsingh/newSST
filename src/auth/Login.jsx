@@ -128,6 +128,7 @@ import { getCookie, removeCookie, setCookie } from "../utils/Cookies";
 import { useEffect, useState } from "react";
 import { useLoginMutation } from "../redux/QueryAPi/auth";
 import LoaderButton from "../CustomUi/LoaderButton";
+import { toast } from "react-toastify";
 
 const LOGIN_FAILED_MESSAGE = "Login failed. Please try again.";
 const AUTH_COOKIE_KEY = 'auth';
@@ -179,10 +180,11 @@ const Login = () => {
             } else {
                 removeCookie(AUTH_COOKIE_KEY);
             }
+            toast.success("Check Email")
+
             navigate('/auth/verify-otp');
         }
     }, [isSuccess, data, rememberMe, navigate]);
-
     return (
         <>
             <h2 className="mb-4">Log In to PSG</h2>

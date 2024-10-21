@@ -8,7 +8,7 @@ export const AUTH = {
   
 // dashboard
 export const DASHBOARD = {
-  LIST_DAS_CUSTOMERS: "v1/customer-list", 
+  DASHBOARD: "v1/dashboard/lists", 
 
 
 };

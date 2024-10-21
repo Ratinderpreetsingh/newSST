@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetAllShopsQuery } from "../../redux/QueryAPi/shopApi";
 import Pagination from "../../CustomUi/Pagination";
 
@@ -15,11 +15,13 @@ const Shop = () => {
   };
 
   // Handle search button click
-  const handleSearchClick = () => {
-    setCurrentPage(1); // Reset to the first page on a new search
-  };
+  // const handleSearchClick = () => {
+  //   setCurrentPage(1); // Reset to the first page on a new search
+  // };
 
- 
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top when the component mounts
+}, []);
   if (error) {
     return <div>Error loading shops</div>;
   }
@@ -94,7 +96,7 @@ const Shop = () => {
                       <span
                         id="search-button"
                         className="btn btn-danger position-absolute end-0"
-                        onClick={handleSearchClick}
+                        // onClick={handleSearchClick}
                       >
                         <i className="bi bi-search"></i>
                       </span>

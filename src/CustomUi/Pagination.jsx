@@ -131,7 +131,7 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
         return pages.slice(startPage - 1, endPage).map((pageNumber) => (
             <li key={pageNumber} className="page-item">
                 <span
-                    style={{ color: currentPage === pageNumber ? '#000' : '#be3134' }}
+                    style={{cursor:'pointer', color: currentPage === pageNumber ? '#000' : '#be3134' }}
                     className="page-link"
                     onClick={() => handlePageChange(pageNumber)}
                 >

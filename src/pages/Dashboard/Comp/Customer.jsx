@@ -1,10 +1,9 @@
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Pagination from "../../../CustomUi/Pagination";
-import { useGetALLdashboardcustomersQuery } from "../../../redux/QueryAPi/dashboard";
+// import Pagination from "../../../CustomUi/Pagination";
 
-const Customer = () => {
+const Customer = ({customer,isLoading}) => {
   const [currentPage, setCurrentPage] = useState(1); // Local state for ComponentA
 
   const state = useSelector((state) => state.pagintiona);
@@ -18,20 +17,18 @@ const handleSearch=(e)=>{
   setSearch(e.target.value)
 
 }
-  const { data: allCustomers, isError, isLoading, isSuccess } = useGetALLdashboardcustomersQuery({page:currentPage, delivery_date:delivery_date,status:status,search:search});
 
-  useEffect(() => {
-    // If you want to do something with allCustomers, handle it here
-  }, [allCustomers]);
+  
   return (
     <div className="content-container">
 
-      <h1><i className="bi bi-speedometer2 "></i>Customer</h1>
-      <div className="container-area mt-5">
+      {/* <h1><i className="bi bi-speedometer2 "></i>Customer</h1> */}
+      <div className="container-area ">
         <div className="row">
           <div className="col-lg-12">
             <div className="card">
               <div className="card-header">
+              <h5 className="mb-2">Customer</h5>
 
                 <div className="row mb-3">
                   <div className="col-md-2">
@@ -138,14 +135,14 @@ const handleSearch=(e)=>{
                     <tbody>
                     
                       {isLoading ? <td style={{ textAlign: 'center',padding:'20px' }} colSpan="9">Loading...</td> 
-                                  : allCustomers.data.length <1  ?<tr>
+                                  : customer?.data?.length <1  ?<tr>
                                   <td colSpan="9" style={{ textAlign: 'center' }}>
                                     Not Found
                                   </td>
                                 </tr>
-                                  :allCustomers && allCustomers.data.map((value, index) => (
+                                  :customer?.data && customer?.data.map((value, index) => (
                         <tr key={index}>
-                          <td>{value.id}.</td>
+                          <td>{value.id}</td>
                           <td>{value.OwnerFName + value.OwnerLName}</td>
                           <td>{value?.UID}</td>
                           <td>{value?.shopName ? value?.shopName : '-'}</td>
@@ -172,9 +169,9 @@ const handleSearch=(e)=>{
               </div>
               <div className="card-footer text-center">
                 {/* <Pagination totalPages={allCustomers?.last_page} /> */}
-                <Pagination totalPages={allCustomers?.last_page} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+                {/* <Pagination totalPages={allCustomers?.last_page} currentPage={currentPage} setCurrentPage={setCurrentPage} /> */}
 
-                {/* <button className="btn btn-danger">View All</button> */}
+                <button className="btn btn-danger" onClick={()=>navigate('/customer')}>View All</button>
               </div>
             </div>
           </div>
@@ -189,3 +186,12 @@ const handleSearch=(e)=>{
 }
 export default Customer
 
+// import React from 'react'
+
+// const Customer = () => {
+//   return (
+//     <div>Customer</div>
+//   )
+// }
+
+// export default Customer

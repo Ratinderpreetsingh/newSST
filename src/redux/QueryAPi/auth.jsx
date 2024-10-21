@@ -19,7 +19,11 @@ export const authApi = baseApi.injectEndpoints({
         method: 'POST',
         body: credentials,
       }),
+     
     }),
+    
+      
+    
     forgot: build.mutation({
       query: (credentials) => ({
         url: AUTH.FORGOT,

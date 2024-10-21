@@ -1,9 +1,25 @@
+import { useState } from "react";
+import { useGetAllDashbaordQuery } from "../../redux/QueryAPi/dashboard";
 import { getCookie } from "../../utils/Cookies";
 import Customer from "./Comp/Customer";
+import Shops from "./Comp/Shops";
 
 const Dashboard = () => {
   const res= getCookie('auth')
+  const page =10
   console.log(res)
+  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState('');
+   const handleStatus =(e)=>{
+    setStatus(e.target.value)
+   }
+  const handleSearch = (e) => {
+    setSearch(e.target.value)
+
+  }
+  console.log(status)
+  const {data:dashbaord,isLoading}=useGetAllDashbaordQuery({page:page,shopsearch:search,shopstatus:status})
+  console.log(dashbaord,isLoading,"data")
   return (
     <>
       <div className="content-container">
@@ -18,7 +34,7 @@ const Dashboard = () => {
                 <div className="card-body">
                   <div className="row align-items-center">
                     <div className="col-md-8 p-0">
-                      <h3>5000+</h3>
+                      <h3>{dashbaord?.customer_total_count || '-'}</h3>
                     </div>
                     <div className="col-md-4 p-0 text-right">
                       <div className="card-icon mb-0">👥</div>
@@ -34,7 +50,7 @@ const Dashboard = () => {
                 <div className="card-body">
                   <div className="row align-items-center">
                     <div className="col-md-8 p-0">
-                      <h3>2000+</h3>
+                      <h3>{dashbaord?.shop_total_count || '-'}</h3>
                     </div>
                     <div className="col-md-4 p-0 text-right">
                       <div className="card-icon mb-0">🏬</div>
@@ -63,7 +79,7 @@ const Dashboard = () => {
 
           <div className="row my-4">
             {/* /* <!-- Shops Section --> */}
-            <div className="col-lg-6 mb-4">
+            {/* <div className="col-lg-6 mb-4">
               <div className="card">
                 <div className="card-header d-flex justify-content-between align-items-center">
                   <h5 className="mb-0">Shops</h5>
@@ -239,7 +255,8 @@ const Dashboard = () => {
                   <button className="btn btn-danger">View All</button>
                 </div>
               </div>
-            </div>
+            </div> */}
+            <Shops shop={dashbaord?.shop_lists} isLoading={isLoading} handleSearch={handleSearch} handleStatus={handleStatus}/>
             {/* <!-- Surveys Section --> */}
             <div className="col-lg-6 mb-4">
               <div className="card">
@@ -486,305 +503,8 @@ const Dashboard = () => {
           </div>
 
           <div className="row">
-          <Customer/>
-            {/* <div className="col-lg-12">
-              <div className="card">
-                <div className="card-header">
-                  <h5 className="">Customer</h5>
-                  <div className="row mb-3">
-                    <div className="col-md-2">
-                      <div className="tp-title">
-                        <b>Sort by</b>
-                      </div>
-                      <select
-                        name="sortby"
-                        defaultValue={"DEFAULT"}
-                        className="form-select"
-                        aria-label="Sort"
-                      >
-                        <option value="DEFAULT" disabled>
-                          Sort by
-                        </option>
-                        <option value="1">Name (A-Z)</option>
-                        <option value="2">Name (Z-A)</option>
-                        <option value="3">Date (Newest)</option>
-                        <option value="4">Date (Oldest)</option>
-                        <option value="5">Active</option>
-                        <option value="6">Inactive</option>
-                      </select>
-                    </div>
-                    <div className="col-md-2">
-                      <div className="tp-title">
-                        <b>Cleanup</b>
-                      </div>
-                      <input
-                        type="date"
-                        className="form-control"
-                        placeholder="dd/mm/yyyy"
-                        aria-label="Cleanup"
-                      />
-                    </div>
-                    <div className="col-md-2">
-                      <div className="tp-title">
-                        <b>Status</b>
-                      </div>
-                      <select
-                        defaultValue={"DEFAULT"}
-                        name="statusname"
-                        className="form-select"
-                        aria-label="Status"
-                      >
-                        <option value="Any">Any</option>
-                        <option value="1">Clean</option>
-                        <option value="2">Error</option>
-                        <option value="3">Unchecked</option>
-                      </select>
-                    </div>
-                    <div className="col-md-2">
-                      <div className="tp-title">
-                        <b>Definitions</b>
-                      </div>
-                      <div className="d-flex  flex-wrap">
-                        <div className="form-check pe-1">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value="SMS"
-                            id="SMS2"
-                          />
-                          <label className="form-check-label" htmlFor="SMS">
-                            SMS
-                          </label>
-                        </div>
-                        <div className="form-check pe-1">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value="Email"
-                            id="email12"
-                          />
-                          <label className="form-check-label" htmlFor="email">
-                            Email
-                          </label>
-                        </div>
-                        <div className="form-check pe-1">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value="Direct Mail"
-                            id="directmail2"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="directmail"
-                          >
-                            Direct Mail
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-2">
-                      <div className="tp-title">
-                        <b>Delivered Date</b>
-                      </div>
-                      <input
-                        type="date"
-                        className="form-control"
-                        placeholder="dd/mm/yyyy"
-                        aria-label="Input Delivered Date"
-                      />
-                    </div>
-                    <div className="col-md-2">
-                      <div className="tp-title">
-                        <b>Search</b>
-                      </div>
-                      <div className="input-group me-2">
-                        <div
-                          className="form-outline w-100"
-                          data-mdb-input-init=""
-                        >
-                          <input
-                            id="search-input-3"
-                            type="search"
-                            className="form-control"
-                            placeholder="Search"
-                          />
-                        </div>
-                        <span
-                          id="search-button"
-                          className="btn btn-danger position-absolute end-0"
-                        >
-                          <i className="bi bi-search"></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="card-body p-0">
-                  <div className="table-responsive">
-                    <table className="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Customer Name</th>
-                          <th>Customer ID</th>
-                          <th>Shop Name</th>
-                          <th>Email</th>
-                          <th>Status</th>
-                          <th>Input Date</th>
-                          <th>Delivery Date</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1.</td>
-                          <td>Dunn Nicole</td>
-                          <td>7517F594</td>
-                          <td>Smitty's Body Shop</td>
-                          <td>mike.meyer@cox.net</td>
-                          <td>
-                            <span className="badge bg-danger">Error</span>
-                          </td>
-                          <td>24-07-2024</td>
-                          <td>24-09-2024</td>
-                          <td>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-file-earmark-pdf"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-eye"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-trash3"></i>
-                            </button>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td>2.</td>
-                          <td>Dunn Nicole</td>
-                          <td>7517F594</td>
-                          <td>Smitty's Body Shop</td>
-                          <td>mike.meyer@cox.net</td>
-                          <td>
-                            <span className="badge bg-success">Clean</span>
-                          </td>
-                          <td>24-07-2024</td>
-                          <td>24-09-2024</td>
-                          <td>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-file-earmark-pdf"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-eye"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-trash3"></i>
-                            </button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>3.</td>
-                          <td>Dunn Nicole</td>
-                          <td>7517F594</td>
-                          <td>Smitty's Body Shop</td>
-                          <td>mike.meyer@cox.net</td>
-                          <td>
-                            <span className="badge bg-warning">Unchecked</span>
-                          </td>
-                          <td>24-07-2024</td>
-                          <td>24-09-2024</td>
-                          <td>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-file-earmark-pdf"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-eye"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-trash3"></i>
-                            </button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>4.</td>
-                          <td>Dunn Nicole</td>
-                          <td>7517F594</td>
-                          <td>Smitty's Body Shop</td>
-                          <td>mike.meyer@cox.net</td>
-                          <td>
-                            <span className="badge bg-danger">Error</span>
-                          </td>
-                          <td>24-07-2024</td>
-                          <td>24-09-2024</td>
-                          <td>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-file-earmark-pdf"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-eye"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-trash3"></i>
-                            </button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>5.</td>
-                          <td>Dunn Nicole</td>
-                          <td>7517F594</td>
-                          <td>Smitty's Body Shop</td>
-                          <td>mike.meyer@cox.net</td>
-                          <td>
-                            <span className="badge bg-success">clean</span>
-                          </td>
-                          <td>24-07-2024</td>
-                          <td>24-09-2024</td>
-                          <td>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-file-earmark-pdf"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-eye"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-trash3"></i>
-                            </button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>6.</td>
-                          <td>Dunn Nicole</td>
-                          <td>7517F594</td>
-                          <td>Smitty's Body Shop</td>
-                          <td>mike.meyer@cox.net</td>
-                          <td>
-                            <span className="badge bg-warning">Unchecked</span>
-                          </td>
-                          <td>24-07-2024</td>
-                          <td>24-09-2024</td>
-                          <td>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-file-earmark-pdf"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-eye"></i>
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger p-1">
-                              <i className="bi bi-trash3"></i>
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <div className="card-footer text-center">
-                  <button className="btn btn-danger">View All</button>
-                </div>
-              </div>
-            </div> */}
+          <Customer customer={dashbaord?.customer_lists} isLoading={isLoading}/>
+       
           </div>
         </div>
       </div>

@@ -3,9 +3,10 @@ import { DASHBOARD } from "../../Constant/Api_Routes";
 
 export const dashboardAPi =baseApi.injectEndpoints({
     endpoints:(build)=>({
-        getALLdashboardcustomers:build.query({
-            query:({page, delivery_date,status,search})=>{
-                return `${DASHBOARD.LIST_DAS_CUSTOMERS}?page=${page}&delivery_date=${delivery_date}&status=${status}&search=${search}`
+        getAllDashbaord:build.query({
+            query:({page,shopsearch,shopstatus})=>{
+                // debugger
+                return `${DASHBOARD.DASHBOARD}?perPage=${page}&shopsearch=${shopsearch}&shopstatus=${shopstatus}`
             },
             transformResponse: (response) => {
                 console.log('Response from API:', response);
@@ -17,4 +18,4 @@ export const dashboardAPi =baseApi.injectEndpoints({
     overrideExisting: false,
 
 })
-export const {useGetALLdashboardcustomersQuery}=dashboardAPi
+export const {useGetAllDashbaordQuery}=dashboardAPi

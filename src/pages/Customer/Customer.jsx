@@ -9,20 +9,33 @@ const Customer = () => {
 
   const state = useSelector((state) => state.pagintiona);
   const [deliveryDate, setDeliveryDate] = useState('');
+  const [cleanup, setCleanup] = useState('');
   const [status, setStatus] = useState('');
   const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('');
+
   const navigate = useNavigate();
   const page = state?.currentPage;
-  const  delivery_date =deliveryDate.split('-').reverse().join('/')
-const handleSearch=(e)=>{
-  setSearch(e.target.value)
+  const delivery_date = deliveryDate.split('-').reverse().join('/')
+  const handleSearch = (e) => {
+    setSearch(e.target.value)
 
-}
-  const { data: allCustomers, isError, isLoading, isSuccess } = useGetAllCustomersQuery({page:currentPage, delivery_date:delivery_date,status:status,search:search});
+  }
+  const { data: allCustomers, isError, isLoading, isSuccess } = useGetAllCustomersQuery({ page: currentPage, delivery_date: delivery_date, status: status, search: search, sorted_by: sortBy, cleanup: cleanup });
 
   useEffect(() => {
     // If you want to do something with allCustomers, handle it here
   }, [allCustomers]);
+  const handleClear = () => {
+    setDeliveryDate('')
+    setStatus('')
+    setSearch('')
+    setSortBy('')
+    setCleanup('')
+  }
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top when the component mounts
+}, []);
   return (
     <div className="content-container">
 
@@ -38,28 +51,34 @@ const handleSearch=(e)=>{
                     <div className="tp-title">
                       <b>Sort by</b>
                     </div>
-                    <select className="form-select" aria-label="Sort">
-                      <option selected>Sort by</option>
-                      <option value="1">Name (A-Z)</option>
-                      <option value="2">Name (Z-A)</option>
-                      <option value="3">Date (Newest)</option>
-                      <option value="4">Date (Oldest)</option>
-                      <option value="5">Active</option>
-                      <option value="6">Inactive</option>
+                    <select
+                      className="form-select"
+                      aria-label="Sort"
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                    >
+                      <option value="">Sort by</option>
+                      <option value="name_A_Z">Name (A-Z)</option>
+                      <option value="name_Z_A">Name (Z-A)</option>
+                      <option value="date_newest">Date (Newest)</option>
+                      <option value="date_oldest">Date (Oldest)</option>
+                      <option value="true">Active</option>
+                      <option value="false">Inactive</option>
                     </select>
+
                   </div>
                   <div className="col-md-2">
                     <div className="tp-title">
                       <b>Cleanup</b>
                     </div>
-                    <input type="date" className="form-control" placeholder="dd/mm/yyyy" aria-label="Cleanup" />
+                    <input type="date" className="form-control" placeholder="dd/mm/yyyy" aria-label="Cleanup" onChange={(e) => setCleanup(e.target.value)} />
                   </div>
                   <div className="col-md-2">
                     <div className="tp-title">
                       <b>Status</b>
                     </div>
-                    <select className="form-select" aria-label="Status" onChange={(e)=>setStatus(e.target.value)}>
-                      <option selected value=''>Any</option>
+                    <select className="form-select" aria-label="Status" onChange={(e) => setStatus(e.target.value)}>
+                      <option  value=''>Any</option>
                       <option value="Clean">Clean</option>
                       <option value="Error">Error</option>
                       <option value="Unchecked">Unchecked</option>
@@ -72,19 +91,19 @@ const handleSearch=(e)=>{
                     <div className="d-flex  flex-wrap">
                       <div className="form-check pe-1">
                         <input className="form-check-input" type="checkbox" value="" id="SMS" />
-                        <label className="form-check-label" for="SMS">
+                        <label className="form-check-label" htmlFor="SMS">
                           SMS
                         </label>
                       </div>
                       <div className="form-check pe-1">
                         <input className="form-check-input" type="checkbox" value="" id="email" checked="" />
-                        <label className="form-check-label" for="email">
+                        <label className="form-check-label" htmlFor="email">
                           Email
                         </label>
                       </div>
                       <div className="form-check pe-1">
                         <input className="form-check-input" type="checkbox" value="" id="directmail" checked="" />
-                        <label className="form-check-label" for="directmail">
+                        <label className="form-check-label" htmlFor="directmail">
                           Direct Mail
                         </label>
                       </div>
@@ -95,13 +114,13 @@ const handleSearch=(e)=>{
                       <b>Delivered Date</b>
                     </div>
                     <input
-                           type="date" 
-                           className="form-control" 
-                           placeholder="dd/mm/yyyy"
-                           aria-label="Input Delivered Date"
-                           value={deliveryDate}
-                           onChange={(e)=>setDeliveryDate(e.target.value)}
-                      />
+                      type="date"
+                      className="form-control"
+                      placeholder="dd/mm/yyyy"
+                      aria-label="Input Delivered Date"
+                      value={deliveryDate}
+                      onChange={(e) => setDeliveryDate(e.target.value)}
+                    />
                   </div>
                   <div className="col-md-2">
                     <div className="tp-title">
@@ -116,6 +135,7 @@ const handleSearch=(e)=>{
                       </span>
                     </div>
                   </div>
+                  <span style={{ textAlign: 'right', cursor: 'pointer', color: '#0000EE' }} onClick={handleClear}>Clear All Filter</span>
                 </div>
 
               </div>
@@ -136,34 +156,32 @@ const handleSearch=(e)=>{
                       </tr>
                     </thead>
                     <tbody>
-                    
-                      {isLoading ? <td style={{ textAlign: 'center',padding:'20px' }} colSpan="9">Loading...</td> 
-                                  : allCustomers.data.length <1  ?<tr>
-                                  <td colSpan="9" style={{ textAlign: 'center' }}>
-                                    Not Found
-                                  </td>
-                                </tr>
-                                  :allCustomers && allCustomers.data.map((value, index) => (
-                        <tr key={index}>
-                          <td>{value.id}.</td>
-                          <td>{value.OwnerFName + value.OwnerLName}</td>
-                          <td>{value?.UID}</td>
-                          <td>{value?.shopName ? value?.shopName : '-'}</td>
-                          <td>{value?.OwnerEmail ? value?.OwnerEmail : '-'}</td>
-                          <td>
-                            <span className={`badge ${value?.status === "Error" ? "bg-danger" : value?.status === "Unchecked" ? "bg-warning" : "bg-success"}`}>
-                              {value?.status}
-                            </span>
-                          </td>
-                          <td>{value?.input_date}</td>
-                          <td>{value?.DeliveredDate}</td>
-                          <td>
-                            <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-file-earmark-pdf"></i></button>
-                            <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-eye"></i></button>
-                            <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-trash3"></i></button>
-                          </td>
-                        </tr>
-                      ))}
+
+                      {isLoading ? <tr ><td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Loading...</td></tr>
+                        : allCustomers.data.length < 1 ? <tr ><td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Not Found</td></tr>
+                          : allCustomers && allCustomers.data.map((value, index) => {
+                            return  <tr key={index}>
+                            <td>{index+1}</td>
+                            <td>{value.OwnerFName + ' ' + value.OwnerLName}</td>
+                            <td>{value?.UID}</td>
+                            <td>{value?.shop_name?.shop_name ? value?.shop_name?.shop_name : '-'}</td>
+                            <td>{value?.OwnerEmail ? value?.OwnerEmail : '-'}</td>
+                            <td>
+                              <span className={`badge ${value?.status === "Error" ? "bg-danger" : value?.status === "Unchecked" ? "bg-warning" : "bg-success"}`}>
+                                {value?.status}
+                              </span>
+                            </td>
+                            <td>{value?.input_date}</td>
+                            <td>{value?.DeliveredDate}</td>
+                            <td>
+                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-file-earmark-pdf"></i></button>
+                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-eye"></i></button>
+                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-trash3"></i></button>
+                            </td>
+                          </tr>
+                          }
+                           
+                          )}
 
 
                     </tbody>
