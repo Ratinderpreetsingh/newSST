@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import React, { useEffect } from 'react';
-import LoaderButton from '../CustomUi/LoaderButton';
+import LoaderButton from '../Custom_hooks/LoaderButton';
 import { changePasswordValidation } from '../Validation/auth';
 import { useChangepasswordMutation } from '../redux/QueryAPi/auth';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';

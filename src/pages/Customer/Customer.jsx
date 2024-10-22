@@ -1,31 +1,30 @@
 import { useSelector } from "react-redux";
-import Pagination from "../../CustomUi/Pagination";
+import Pagination from "../../Custom_hooks/Pagination";
 import { useGetAllCustomersQuery } from "../../redux/QueryAPi/customer";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useDebounce from "../../Custom_hooks/Debouncing";
 
 const Customer = () => {
   const [currentPage, setCurrentPage] = useState(1); // Local state for ComponentA
-
   const state = useSelector((state) => state.pagintiona);
   const [deliveryDate, setDeliveryDate] = useState('');
   const [cleanup, setCleanup] = useState('');
   const [status, setStatus] = useState('');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
+  const debouncevalue = useDebounce(search,300)
 
   const navigate = useNavigate();
   const page = state?.currentPage;
   const delivery_date = deliveryDate.split('-').reverse().join('/')
+
   const handleSearch = (e) => {
     setSearch(e.target.value)
 
   }
-  const { data: allCustomers, isError, isLoading, isSuccess } = useGetAllCustomersQuery({ page: currentPage, delivery_date: delivery_date, status: status, search: search, sorted_by: sortBy, cleanup: cleanup });
 
-  useEffect(() => {
-    // If you want to do something with allCustomers, handle it here
-  }, [allCustomers]);
+ 
   const handleClear = () => {
     setDeliveryDate('')
     setStatus('')
@@ -33,10 +32,21 @@ const Customer = () => {
     setSortBy('')
     setCleanup('')
   }
+  const { data: allCustomers, isError, isLoading, isSuccess } = useGetAllCustomersQuery({ page: currentPage,
+                                                                                          delivery_date: delivery_date, 
+                                                                                          status: status, 
+                                                                                          search: debouncevalue, 
+                                                                                          sorted_by: sortBy, 
+                                                                                          cleanup: cleanup 
+                                                                                        });
+
   useEffect(() => {
-    window.scrollTo(0, 0); // Scroll to top when the component mounts
+    window.scrollTo(0, 0); 
 }, []);
-  return (
+
+
+
+return (
     <div className="content-container">
 
       <h1><i className="bi bi-speedometer2 "></i>Customer</h1>
@@ -71,13 +81,13 @@ const Customer = () => {
                     <div className="tp-title">
                       <b>Cleanup</b>
                     </div>
-                    <input type="date" className="form-control" placeholder="dd/mm/yyyy" aria-label="Cleanup" onChange={(e) => setCleanup(e.target.value)} />
+                    <input type="date" className="form-control" placeholder="dd/mm/yyyy" aria-label="Cleanup" value={cleanup} onChange={(e) => setCleanup(e.target.value)} />
                   </div>
                   <div className="col-md-2">
                     <div className="tp-title">
                       <b>Status</b>
                     </div>
-                    <select className="form-select" aria-label="Status" onChange={(e) => setStatus(e.target.value)}>
+                    <select className="form-select" aria-label="Status" value={status} onChange={(e) => setStatus(e.target.value)}>
                       <option  value=''>Any</option>
                       <option value="Clean">Clean</option>
                       <option value="Error">Error</option>
@@ -128,7 +138,7 @@ const Customer = () => {
                     </div>
                     <div className="input-group me-2">
                       <div className="form-outline w-100" data-mdb-input-init="">
-                        <input id="search-input" type="search" className="form-control" placeholder="Search" onChange={handleSearch} />
+                        <input id="search-input" type="search" className="form-control" placeholder="Search" value={search}onChange={handleSearch} />
                       </div>
                       <span id="search-button" className="btn btn-danger position-absolute end-0">
                         <i className="bi bi-search"></i>
@@ -159,7 +169,8 @@ const Customer = () => {
 
                       {isLoading ? <tr ><td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Loading...</td></tr>
                         : allCustomers.data.length < 1 ? <tr ><td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Not Found</td></tr>
-                          : allCustomers && allCustomers.data.map((value, index) => {
+                          : allCustomers && allCustomers?.data.map((value, index,arr) => {
+                            console.log(arr,'arr')
                             return  <tr key={index}>
                             <td>{index+1}</td>
                             <td>{value.OwnerFName + ' ' + value.OwnerLName}</td>

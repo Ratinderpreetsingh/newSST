@@ -1,24 +1,13 @@
-import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 // import Pagination from "../../../CustomUi/Pagination";
 
-const Customer = ({customer,isLoading}) => {
-  const [currentPage, setCurrentPage] = useState(1); // Local state for ComponentA
+import { useNavigate } from "react-router-dom";
 
-  const state = useSelector((state) => state.pagintiona);
-  const [deliveryDate, setDeliveryDate] = useState('');
-  const [status, setStatus] = useState('');
-  const [search, setSearch] = useState('');
-  const navigate = useNavigate();
-  const page = state?.currentPage;
-  const  delivery_date =deliveryDate.split('-').reverse().join('/')
-const handleSearch=(e)=>{
-  setSearch(e.target.value)
-
-}
-
+const Customer = ({customer,isLoading,handleQuery,queries,handleClear}) => {
   
+
+  const navigate = useNavigate()
+ 
   return (
     <div className="content-container">
 
@@ -35,27 +24,27 @@ const handleSearch=(e)=>{
                     <div className="tp-title">
                       <b>Sort by</b>
                     </div>
-                    <select className="form-select" aria-label="Sort">
-                      <option selected>Sort by</option>
-                      <option value="1">Name (A-Z)</option>
-                      <option value="2">Name (Z-A)</option>
-                      <option value="3">Date (Newest)</option>
-                      <option value="4">Date (Oldest)</option>
-                      <option value="5">Active</option>
-                      <option value="6">Inactive</option>
+                    <select className="form-select" aria-label="Sort" name="sorted_by" value={queries.sorted_by} onChange={handleQuery}>
+                    <option value="">Sort by</option>
+                      <option value="name_A_Z">Name (A-Z)</option>
+                      <option value="name_Z_A">Name (Z-A)</option>
+                      <option value="date_newest">Date (Newest)</option>
+                      <option value="date_oldest">Date (Oldest)</option>
+                      <option value="true">Active</option>
+                      <option value="false">Inactive</option>
                     </select>
                   </div>
                   <div className="col-md-2">
                     <div className="tp-title">
                       <b>Cleanup</b>
                     </div>
-                    <input type="date" className="form-control" placeholder="dd/mm/yyyy" aria-label="Cleanup" />
+                    <input type="date" className="form-control" placeholder="dd/mm/yyyy" aria-label="Cleanup" value={queries.cleanup} name="cleanup" onChange={handleQuery} />
                   </div>
                   <div className="col-md-2">
                     <div className="tp-title">
                       <b>Status</b>
                     </div>
-                    <select className="form-select" aria-label="Status" onChange={(e)=>setStatus(e.target.value)}>
+                    <select className="form-select" aria-label="Status" value={queries.status} name="status" onChange={handleQuery}>
                       <option selected value=''>Any</option>
                       <option value="Clean">Clean</option>
                       <option value="Error">Error</option>
@@ -68,7 +57,7 @@ const handleSearch=(e)=>{
                     </div>
                     <div className="d-flex  flex-wrap">
                       <div className="form-check pe-1">
-                        <input className="form-check-input" type="checkbox" value="" id="SMS" />
+                        <input className="form-check-input" type="checkbox" value={1}  checked={queries.sms}  onChange={handleQuery} name='sms' />
                         <label className="form-check-label" for="SMS">
                           SMS
                         </label>
@@ -96,8 +85,9 @@ const handleSearch=(e)=>{
                            className="form-control" 
                            placeholder="dd/mm/yyyy"
                            aria-label="Input Delivered Date"
-                           value={deliveryDate}
-                           onChange={(e)=>setDeliveryDate(e.target.value)}
+                           name="delivery_date"
+                           value={queries.delivery_date}
+                            onChange={handleQuery}
                       />
                   </div>
                   <div className="col-md-2">
@@ -106,13 +96,16 @@ const handleSearch=(e)=>{
                     </div>
                     <div className="input-group me-2">
                       <div className="form-outline w-100" data-mdb-input-init="">
-                        <input id="search-input" type="search" className="form-control" placeholder="Search" onChange={handleSearch} />
+                        <input id="search-input" type="search" className="form-control" placeholder="Search"  name="search"  value={queries.search}
+  onChange={handleQuery} />
                       </div>
                       <span id="search-button" className="btn btn-danger position-absolute end-0">
                         <i className="bi bi-search"></i>
                       </span>
                     </div>
                   </div>
+                  <span style={{ textAlign: 'right', cursor: 'pointer', color: '#0000EE' }} onClick={handleClear}>Clear All Filter</span>
+
                 </div>
 
               </div>
@@ -143,7 +136,7 @@ const handleSearch=(e)=>{
                                   :customer?.data && customer?.data.map((value, index) => (
                         <tr key={index}>
                           <td>{value.id}</td>
-                          <td>{value.OwnerFName + value.OwnerLName}</td>
+                          <td>{value.OwnerFName +' ' + value.OwnerLName}</td>
                           <td>{value?.UID}</td>
                           <td>{value?.shopName ? value?.shopName : '-'}</td>
                           <td>{value?.OwnerEmail ? value?.OwnerEmail : '-'}</td>
@@ -168,8 +161,7 @@ const handleSearch=(e)=>{
                 </div>
               </div>
               <div className="card-footer text-center">
-                {/* <Pagination totalPages={allCustomers?.last_page} /> */}
-                {/* <Pagination totalPages={allCustomers?.last_page} currentPage={currentPage} setCurrentPage={setCurrentPage} /> */}
+               
 
                 <button className="btn btn-danger" onClick={()=>navigate('/customer')}>View All</button>
               </div>

@@ -127,8 +127,9 @@ import { loginValidation } from "../Validation/auth";
 import { getCookie, removeCookie, setCookie } from "../utils/Cookies";
 import { useEffect, useState } from "react";
 import { useLoginMutation } from "../redux/QueryAPi/auth";
-import LoaderButton from "../CustomUi/LoaderButton";
+import LoaderButton from "../Custom_hooks/LoaderButton";
 import { toast } from "react-toastify";
+import useToast from "../Custom_hooks/Toaster";
 
 const LOGIN_FAILED_MESSAGE = "Login failed. Please try again.";
 const AUTH_COOKIE_KEY = 'auth';
@@ -139,7 +140,7 @@ const Login = () => {
     const [isShow, setShow] = useState(false);
     const [login, { isSuccess, isLoading, isError, data }] = useLoginMutation();
     const navigate = useNavigate();
-
+    const {notifyError,notifySuccess} = useToast()
     const initialValues = {
         email: '',
         password: '',
@@ -150,7 +151,7 @@ const Login = () => {
         validationSchema: loginValidation,
         onSubmit: (values) => {
             if (!values.email || !values.password) {
-                alert("Please fill in all fields.");
+                ("Please fill in all fields.");
                 return;
             }
             login(values);
@@ -167,7 +168,7 @@ const Login = () => {
 
     useEffect(() => {
         if (data?.result === false) {
-            alert("Invalid credentials.");
+            notifyError("Invalid credentials.");
         }
     }, [data]);
 
@@ -180,7 +181,7 @@ const Login = () => {
             } else {
                 removeCookie(AUTH_COOKIE_KEY);
             }
-            toast.success("Check Email")
+            notifySuccess("Check Email")
 
             navigate('/auth/verify-otp');
         }

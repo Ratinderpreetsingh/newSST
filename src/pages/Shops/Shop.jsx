@@ -1,24 +1,37 @@
 import { useEffect, useState } from "react";
 import { useGetAllShopsQuery } from "../../redux/QueryAPi/shopApi";
-import Pagination from "../../CustomUi/Pagination";
+import Pagination from "../../Custom_hooks/Pagination";
+import useDebounce from "../../Custom_hooks/Debouncing";
 
 const Shop = () => {
-  const [currentPage, setCurrentPage] = useState(1); // Local state for pagination
-  const [search, setSearch] = useState(''); // Local state for search input
-
-  // Fetch data using the query hook
-  const { data: shopList, error, isLoading, isFetching } = useGetAllShopsQuery({ page: currentPage, search });
-  console.log(shopList)
+  const query ={
+    sorted_by: '',
+    status: '',
+    sms:'',
+    }
+  const [currentPage, setCurrentPage] = useState(1); 
+  const [search, setSearch] = useState(''); 
+  const debouncedTerm=useDebounce(search,300)
+  const [queries,setQueries]=useState(query)
+  const { data: shopList, error, isLoading, isFetching } = useGetAllShopsQuery({ page: currentPage, search:debouncedTerm,status:queries.status,sorted_by:queries.sorted_by });
   // Handle search input change
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
-
-  // Handle search button click
-  // const handleSearchClick = () => {
-  //   setCurrentPage(1); // Reset to the first page on a new search
-  // };
-
+  const handleQuery =(e)=>{
+    const {name,value}=e.target
+    // debugger
+    setQueries((per)=>({...per,[name]:value}))
+  }
+  const handleClear = () => {
+    setQueries({
+      sorted_by: '',
+      status: '',
+      sms:'',
+     
+    })
+      setSearch('')
+  }
   useEffect(() => {
     window.scrollTo(0, 0); // Scroll to top when the component mounts
 }, []);
@@ -39,24 +52,34 @@ const Shop = () => {
                     <div className="tp-title">
                       <b>Sort by</b>
                     </div>
-                    <select className="form-select" aria-label="Sort">
-                      <option selected>Sort by</option>
-                      <option value="1">Name (A-Z)</option>
-                      <option value="2">Name (Z-A)</option>
-                      <option value="3">Date (Newest)</option>
-                      <option value="4">Date (Oldest)</option>
-                      <option value="5">Active</option>
-                      <option value="6">Inactive</option>
+                    <select className="form-select" aria-label="Sort" 
+                           name="sorted_by"
+                           value={queries.sorted_by}
+                            onChange={handleQuery}
+                            >
+                           <option value="">Sort by</option>
+                      <option value="name_A_Z">Name (A-Z)</option>
+                      <option value="name_Z_A">Name (Z-A)</option>
+                      <option value="date_newest">Date (Newest)</option>
+                      <option value="date_oldest">Date (Oldest)</option>
+                      <option value="true">Active</option>
+                      <option value="false">Inactive</option>
+
                     </select>
                   </div>
                   <div className="col-md-3">
                     <div className="tp-title">
                       <b>Status</b>
                     </div>
-                    <select className="form-select" aria-label="Status">
+                    <select className="form-select" aria-label="Status"
+                             name="status"
+                             value={queries.status}
+
+                             onChange={handleQuery}
+                     >
                       <option selected>Any</option>
                       <option value="1">Yes</option>
-                      <option value="2">No</option>
+                      <option value="0">No</option>
                     </select>
                   </div>
                   <div className="col-md-3">
@@ -102,6 +125,8 @@ const Shop = () => {
                       </span>
                     </div>
                   </div>
+
+                  <span style={{ textAlign: 'right', cursor: 'pointer', color: '#0000EE',paddingTop:'5px' }} onClick={handleClear}>Clear All Filter</span>
                 </div>
               </div>
 

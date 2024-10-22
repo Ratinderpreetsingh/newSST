@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useForgotMutation } from '../redux/QueryAPi/auth';
 import { forgotValidation } from '../Validation/auth';
-import LoaderButton from '../CustomUi/LoaderButton';
-import Toaster from '../CustomUi/Toaster';
+import LoaderButton from '../Custom_hooks/LoaderButton';
+import Toaster from '../Custom_hooks/Toaster';
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 

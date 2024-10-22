@@ -84,7 +84,7 @@
 // export default VerifyOtp;
 import { useFormik } from 'formik';
 import React, { useEffect } from 'react';
-import LoaderButton from '../CustomUi/LoaderButton';
+import LoaderButton from '../Custom_hooks/LoaderButton';
 import { otpValidation } from '../Validation/auth';
 import { getCookie, setCookie } from '../utils/Cookies';
 import { useOtpMutation } from '../redux/QueryAPi/auth';

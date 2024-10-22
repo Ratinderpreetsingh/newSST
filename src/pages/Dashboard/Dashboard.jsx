@@ -8,8 +8,31 @@ const Dashboard = () => {
   const res= getCookie('auth')
   const page =10
   console.log(res)
+  const query ={
+    cleanup: '' ,
+    sorted_by: '',
+    status: '',
+    sms:'',
+    delivery_date: '',
+    search: ''
+    }
+  const [queries,setQueries]=useState(query)
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
+  const handleQuery =(e)=>{
+    const {name,value}=e.target
+    setQueries((per)=>({...per,[name]:value}))
+  }
+  const handleClear = ()=>{
+    setQueries({
+      cleanup: '' ,
+      sorted_by: '',
+      status: '',
+      sms:'',
+      delivery_date: '',
+      search: ''
+    })
+  }
    const handleStatus =(e)=>{
     setStatus(e.target.value)
    }
@@ -17,9 +40,16 @@ const Dashboard = () => {
     setSearch(e.target.value)
 
   }
-  console.log(status)
-  const {data:dashbaord,isLoading}=useGetAllDashbaordQuery({page:page,shopsearch:search,shopstatus:status})
-  console.log(dashbaord,isLoading,"data")
+  const {data:dashbaord,isLoading}=useGetAllDashbaordQuery({page:page,
+                                                            shopsearch:search,
+                                                            shopstatus:status,
+                                                            cleanup: queries.cleanup,
+                                                            sorted_by: queries.sorted_by, 
+                                                            status: queries.status, 
+                                                            sms:queries.sms,
+                                                            delivery_date:  queries.delivery_date,
+                                                            search: queries.search, 
+                                                            })
   return (
     <>
       <div className="content-container">
@@ -503,7 +533,7 @@ const Dashboard = () => {
           </div>
 
           <div className="row">
-          <Customer customer={dashbaord?.customer_lists} isLoading={isLoading}/>
+          <Customer customer={dashbaord?.customer_lists} isLoading={isLoading} handleQuery={handleQuery} queries={queries} handleClear={handleClear}/>
        
           </div>
         </div>
