@@ -48,7 +48,7 @@ const Shops = ({shop,isLoading,handleSearch,handleStatus}) => {
                           aria-label="Sort"
                           onChange={handleStatus}
                         >
-                          <option value="DEFAULT" disabled>
+                          <option value="" >
                             Any
                           </option>
                           <option value="1">Yes</option>

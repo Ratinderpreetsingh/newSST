@@ -13,6 +13,8 @@ const Customer = () => {
   const [status, setStatus] = useState('');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
+  const [sms, setSms] = useState('');
+
   const debouncevalue = useDebounce(search,300)
 
   const navigate = useNavigate();
@@ -24,20 +26,25 @@ const Customer = () => {
 
   }
 
- 
+  const handleChange = (e) => {
+    // Set sms to 1 if checked, else set to 0
+    setSms(e.target.checked ? 1 : 0);
+  };
   const handleClear = () => {
     setDeliveryDate('')
     setStatus('')
     setSearch('')
     setSortBy('')
     setCleanup('')
+    setSms('')
   }
   const { data: allCustomers, isError, isLoading, isSuccess } = useGetAllCustomersQuery({ page: currentPage,
                                                                                           delivery_date: delivery_date, 
                                                                                           status: status, 
                                                                                           search: debouncevalue, 
                                                                                           sorted_by: sortBy, 
-                                                                                          cleanup: cleanup 
+                                                                                          cleanup: cleanup,
+                                                                                          sms:sms
                                                                                         });
 
   useEffect(() => {
@@ -100,8 +107,13 @@ return (
                     </div>
                     <div className="d-flex  flex-wrap">
                       <div className="form-check pe-1">
-                        <input className="form-check-input" type="checkbox" value="" id="SMS" />
-                        <label className="form-check-label" htmlFor="SMS">
+                      <input
+    className="form-check-input"
+    type="checkbox"
+    checked={sms === 1} // Check if sms is 1 to determine the checked state
+    id="SMS"
+    onChange={handleChange}
+  />                        <label className="form-check-label" htmlFor="SMS">
                           SMS
                         </label>
                       </div>

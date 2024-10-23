@@ -77,7 +77,7 @@ const Shop = () => {
 
                              onChange={handleQuery}
                      >
-                      <option selected>Any</option>
+                      <option value=''>Any</option>
                       <option value="1">Yes</option>
                       <option value="0">No</option>
                     </select>
