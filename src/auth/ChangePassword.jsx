@@ -21,7 +21,6 @@ const ChangePassword = () => {
         initialValues: initialValues,
         validationSchema: changePasswordValidation,
         onSubmit: async(values) => {
-            console.log(values);
            await changepassword(values)
             resetForm();  // Fixed typo from resetform to resetForm
             navigate('/auth/login')

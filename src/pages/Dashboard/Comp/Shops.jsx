@@ -131,7 +131,7 @@ const Shops = ({shop,isLoading,handleSearch,handleStatus}) => {
                                 <td>{index+1}</td>
                                 <td>{value?.shop_name || '-'}</td>
                                 <td>{value?.psg_id || '-'}</td>
-                                <td>Bob Wiese</td>
+                                <td>{value.OwnerFName || '-'}</td>
                                 <td>
                                   <button className="btn btn-sm btn-outline-danger p-1">
                                     <i className="bi bi-eye"></i>

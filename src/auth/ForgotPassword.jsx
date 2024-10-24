@@ -18,7 +18,6 @@ const ForgotPassword = () => {
         },
         validationSchema: forgotValidation,
         onSubmit:async (values, { resetForm }) => {
-            console.log(values);
             // Navigate to change password page or handle API request here
             await forgot(values)
             resetForm()

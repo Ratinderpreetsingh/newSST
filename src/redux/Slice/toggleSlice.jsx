@@ -8,7 +8,6 @@ const toggleSlice = createSlice({
     initialState:initialState,
     reducers:{
         isToogle:(state)=>{
-            console.log(state)
             state.isTrue = !state.isTrue; 
         }
     }

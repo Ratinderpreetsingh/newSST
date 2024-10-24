@@ -3,11 +3,11 @@
 
 import { useNavigate } from "react-router-dom";
 
-const Customer = ({customer,isLoading,handleQuery,queries,handleClear}) => {
-  
+const Customer = ({ customer, isLoading, handleQuery, queries, handleClear }) => {
+
 
   const navigate = useNavigate()
- 
+
   return (
     <div className="content-container">
 
@@ -17,7 +17,7 @@ const Customer = ({customer,isLoading,handleQuery,queries,handleClear}) => {
           <div className="col-lg-12">
             <div className="card">
               <div className="card-header">
-              <h5 className="mb-2">Customer</h5>
+                <h5 className="mb-2">Customer</h5>
 
                 <div className="row mb-3">
                   <div className="col-md-2">
@@ -25,7 +25,7 @@ const Customer = ({customer,isLoading,handleQuery,queries,handleClear}) => {
                       <b>Sort by</b>
                     </div>
                     <select className="form-select" aria-label="Sort" name="sorted_by" value={queries.sorted_by} onChange={handleQuery}>
-                    <option value="">Sort by</option>
+                      <option value="">Sort by</option>
                       <option value="name_A_Z">Name (A-Z)</option>
                       <option value="name_Z_A">Name (Z-A)</option>
                       <option value="date_newest">Date (Newest)</option>
@@ -57,7 +57,16 @@ const Customer = ({customer,isLoading,handleQuery,queries,handleClear}) => {
                     </div>
                     <div className="d-flex  flex-wrap">
                       <div className="form-check pe-1">
-                        <input className="form-check-input" type="checkbox" value={1}  checked={queries.sms}  onChange={handleQuery} name='sms' />
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          checked={queries.sms} // Check if sms is 1 to determine the checked state
+                          value={1}
+                          id="SMS"
+                          name='sms'
+                          onChange={handleQuery}
+                        />
+                        {/* <input className="form-check-input" type="checkbox" value={1}  checked={queries.sms}  onChange={handleQuery} name='sms' /> */}
                         <label className="form-check-label" for="SMS">
                           SMS
                         </label>
@@ -81,14 +90,14 @@ const Customer = ({customer,isLoading,handleQuery,queries,handleClear}) => {
                       <b>Delivered Date</b>
                     </div>
                     <input
-                           type="date" 
-                           className="form-control" 
-                           placeholder="dd/mm/yyyy"
-                           aria-label="Input Delivered Date"
-                           name="delivery_date"
-                           value={queries.delivery_date}
-                            onChange={handleQuery}
-                      />
+                      type="date"
+                      className="form-control"
+                      placeholder="dd/mm/yyyy"
+                      aria-label="Input Delivered Date"
+                      name="delivery_date"
+                      value={queries.delivery_date}
+                      onChange={handleQuery}
+                    />
                   </div>
                   <div className="col-md-2">
                     <div className="tp-title">
@@ -96,8 +105,8 @@ const Customer = ({customer,isLoading,handleQuery,queries,handleClear}) => {
                     </div>
                     <div className="input-group me-2">
                       <div className="form-outline w-100" data-mdb-input-init="">
-                        <input id="search-input" type="search" className="form-control" placeholder="Search"  name="search"  value={queries.search}
-  onChange={handleQuery} />
+                        <input id="search-input" type="search" className="form-control" placeholder="Search" name="search" value={queries.search}
+                          onChange={handleQuery} />
                       </div>
                       <span id="search-button" className="btn btn-danger position-absolute end-0">
                         <i className="bi bi-search"></i>
@@ -126,34 +135,38 @@ const Customer = ({customer,isLoading,handleQuery,queries,handleClear}) => {
                       </tr>
                     </thead>
                     <tbody>
-                    
-                      {isLoading ? <td style={{ textAlign: 'center',padding:'20px' }} colSpan="9">Loading...</td> 
-                                  : customer?.data?.length <1  ?<tr>
-                                  <td colSpan="9" style={{ textAlign: 'center' }}>
-                                    Not Found
-                                  </td>
-                                </tr>
-                                  :customer?.data && customer?.data.map((value, index) => (
-                        <tr key={index}>
-                          <td>{value.id}</td>
-                          <td>{value.OwnerFName +' ' + value.OwnerLName}</td>
-                          <td>{value?.UID}</td>
-                          <td>{value?.shopName ? value?.shopName : '-'}</td>
-                          <td>{value?.OwnerEmail ? value?.OwnerEmail : '-'}</td>
-                          <td>
-                            <span className={`badge ${value?.status === "Error" ? "bg-danger" : value?.status === "Unchecked" ? "bg-warning" : "bg-success"}`}>
-                              {value?.status}
-                            </span>
-                          </td>
-                          <td>{value?.input_date}</td>
-                          <td>{value?.DeliveredDate}</td>
-                          <td>
-                            <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-file-earmark-pdf"></i></button>
-                            <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-eye"></i></button>
-                            <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-trash3"></i></button>
+
+                      {isLoading ? <td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Loading...</td>
+                        : customer?.data?.length < 1 ? <tr>
+                          <td colSpan="9" style={{ textAlign: 'center' }}>
+                            Not Found
                           </td>
                         </tr>
-                      ))}
+                          : customer?.data && customer?.data.map((value, index) => {
+                            const [month, day, year] = value?.DeliveredDate.split('/');
+                            const formattedDate = `${day}/${month}/${year}`;
+                            return   <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{value.OwnerFName + ' ' + value.OwnerLName}</td>
+                            <td>{value?.UID}</td>
+                            <td>{value?.shop_name?.shop_name ? value?.shop_name?.shop_name : '-'}</td>
+                            <td>{value?.OwnerEmail ? value?.OwnerEmail : '-'}</td>
+                            <td>
+                              <span className={`badge ${value?.status === "Error" ? "bg-danger" : value?.status === "Unchecked" ? "bg-warning" : "bg-success"}`}>
+                                {value?.status}
+                              </span>
+                            </td>
+                            <td>{value?.input_date}</td>
+                            <td>{formattedDate}</td>
+                            <td>
+                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-file-earmark-pdf"></i></button>
+                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-eye"></i></button>
+                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-trash3"></i></button>
+                            </td>
+                          </tr>
+                          }
+                          
+                          )}
 
 
                     </tbody>
@@ -161,9 +174,9 @@ const Customer = ({customer,isLoading,handleQuery,queries,handleClear}) => {
                 </div>
               </div>
               <div className="card-footer text-center">
-               
 
-                <button className="btn btn-danger" onClick={()=>navigate('/customer')}>View All</button>
+
+                <button className="btn btn-danger" onClick={() => navigate('/customer')}>View All</button>
               </div>
             </div>
           </div>

@@ -2,7 +2,6 @@ import Cookies from 'js-cookie';
 
 export const setCookie = (name, value, options = {}) => {
   if (!name || !value) {
-    console.error('Both name and value are required to set a cookie.');
     return;
   }
   
@@ -14,7 +13,6 @@ export const setCookie = (name, value, options = {}) => {
 
 export const getCookie = (name) => {
   if (!name) {
-    console.error('Cookie name is required to retrieve a cookie.');
     return null;
   }
 
@@ -25,7 +23,6 @@ export const getCookie = (name) => {
 // Remove a cookie by name
 export const removeCookie = (name, options = {}) => {
   if (!name) {
-    console.error('Cookie name is required to remove a cookie.');
     return;
   }
 

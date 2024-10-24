@@ -29,7 +29,6 @@ export default ProtectedRoutes
 //       if (decodedToken.exp * 1000 < Date.now()) return false;
 //       return true;
 //     } catch (error) {
-//       console.error("Token validation error:", error);
 //       return false; // Invalid token
 //     }
 //   };

@@ -8,7 +8,6 @@ export const dashboardAPi =baseApi.injectEndpoints({
                 // debugger
                 return `${DASHBOARD.DASHBOARD}?perPage=${page}&shopsearch=${shopsearch}&shopstatus=${shopstatus}&delivery_date=${delivery_date}&status=${status}&search=${search}&sorted_by=${sorted_by}&cleanup=${cleanup}&sms=${sms}` },
             transformResponse: (response) => {
-                console.log('Response from API:', response);
                 return response; 
               },
         })

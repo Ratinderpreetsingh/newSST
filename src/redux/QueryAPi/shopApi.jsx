@@ -10,7 +10,6 @@ export const shopApi = baseApi.injectEndpoints({
                                             `;
             },
             transformResponse: (response) => {
-                console.log('Response from API:', response);
                 return response;
             },
         }),

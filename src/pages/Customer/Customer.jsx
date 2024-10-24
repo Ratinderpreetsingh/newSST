@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
 import Pagination from "../../Custom_hooks/Pagination";
 import { useGetAllCustomersQuery } from "../../redux/QueryAPi/customer";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../../Custom_hooks/Debouncing";
+import { ModifyDate } from "../../utils/ModifyDate";
 
 const Customer = () => {
   const [currentPage, setCurrentPage] = useState(1); // Local state for ComponentA
@@ -19,8 +20,14 @@ const Customer = () => {
 
   const navigate = useNavigate();
   const page = state?.currentPage;
-  const delivery_date = deliveryDate.split('-').reverse().join('/')
 
+  // const delivery_date_m = deliveryDate.split('-').reverse();
+  //  const modify = deliveryDate ? delivery_date_m[1]+ '/'+ delivery_date_m[0] + '/'+ delivery_date_m[2] : ''
+  const modifyDate = useMemo(() => ModifyDate(deliveryDate), [deliveryDate]);
+  const modifycleanup = useMemo(() => ModifyDate(cleanup), [cleanup]);
+
+
+  
   const handleSearch = (e) => {
     setSearch(e.target.value)
 
@@ -39,11 +46,11 @@ const Customer = () => {
     setSms('')
   }
   const { data: allCustomers, isError, isLoading, isSuccess } = useGetAllCustomersQuery({ page: currentPage,
-                                                                                          delivery_date: delivery_date, 
+                                                                                          delivery_date: modifyDate , 
                                                                                           status: status, 
                                                                                           search: debouncevalue, 
                                                                                           sorted_by: sortBy, 
-                                                                                          cleanup: cleanup,
+                                                                                          cleanup: modifycleanup,
                                                                                           sms:sms
                                                                                         });
 
@@ -138,7 +145,7 @@ return (
                     <input
                       type="date"
                       className="form-control"
-                      placeholder="dd/mm/yyyy"
+                      placeholder="mm/dd/yyyy"
                       aria-label="Input Delivered Date"
                       value={deliveryDate}
                       onChange={(e) => setDeliveryDate(e.target.value)}
@@ -180,12 +187,15 @@ return (
                     <tbody>
 
                       {isLoading ? <tr ><td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Loading...</td></tr>
-                        : allCustomers.data.length < 1 ? <tr ><td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Not Found</td></tr>
-                          : allCustomers && allCustomers?.data.map((value, index,arr) => {
-                            console.log(arr,'arr')
+                        : allCustomers?.data?.length < 1 ? <tr ><td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Not Found</td></tr>
+                          : allCustomers && allCustomers?.data?.map((value, index,arr) => {
+                            const serialNumber = (allCustomers?.current_page - 1) * 15 + index + 1;
+                            const [month, day, year] = value?.DeliveredDate.split('/');
+                            const formattedDate = `${day}/${month}/${year}`;
+                            // console.log(format)
                             return  <tr key={index}>
-                            <td>{index+1}</td>
-                            <td>{value.OwnerFName + ' ' + value.OwnerLName}</td>
+                            <td>{serialNumber}</td>
+                            <td>{value?.OwnerFName + ' ' + value?.OwnerLName}</td>
                             <td>{value?.UID}</td>
                             <td>{value?.shop_name?.shop_name ? value?.shop_name?.shop_name : '-'}</td>
                             <td>{value?.OwnerEmail ? value?.OwnerEmail : '-'}</td>
@@ -195,7 +205,7 @@ return (
                               </span>
                             </td>
                             <td>{value?.input_date}</td>
-                            <td>{value?.DeliveredDate}</td>
+                            <td>{formattedDate}</td>
                             <td>
                               <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-file-earmark-pdf"></i></button>
                               <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-eye"></i></button>

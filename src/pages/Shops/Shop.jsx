@@ -146,23 +146,27 @@ const Shop = () => {
                   </thead>
                   <tbody>
                     {isLoading ? <td style={{ textAlign: 'center',padding:'20px' }} colSpan="9">Loading...</td> 
-                    :shopList && shopList?.data?.map((shop, index) => (
-                      <tr key={shop.id}>
-                        <td>{shop?.id}</td>
-                        <td>{shop?.m_shop_name_display || "-"}</td>
-                        <td>{shop?.psg_id || "-"}</td>
-                        <td>{shop?.m_webaddress || "-"}</td>
-                        <td>{shop?.phone_number || "-"}</td>
-                        <td>{shop?.address1 || "-"}</td>
-                        <td>{shop?.m_shop_city || "-"}</td>
+                    :shopList && shopList?.data?.map((shop, index) => {
+                      const serialNumber = (shopList?.current_page - 1) * 15 + index + 1;
 
-                        <td>
-                          <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-cart"></i></button>
-                          <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-bar-chart"></i></button>
-                          <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-pencil-square"></i></button>
-                        </td>
-                      </tr>
-                    ))}
+                      return   <tr key={shop.id}>
+                      <td>{serialNumber}</td>
+                      <td>{shop?.m_shop_name_display || "-"}</td>
+                      <td>{shop?.psg_id || "-"}</td>
+                      <td>{shop?.m_webaddress || "-"}</td>
+                      <td>{shop?.phone_number || "-"}</td>
+                      <td>{shop?.address1 || "-"}</td>
+                      <td>{shop?.m_shop_city || "-"}</td>
+
+                      <td>
+                        <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-cart"></i></button>
+                        <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-bar-chart"></i></button>
+                        <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-pencil-square"></i></button>
+                      </td>
+                    </tr>
+                    }
+                    
+                    )}
                   </tbody>
                 </table>
               </div>

@@ -16,7 +16,6 @@
 //         email: '',
 //         password: '',
 //     };
-//     console.log(data, "data")
 //     const navigate = useNavigate();
 
 //     const { values, errors, touched, handleSubmit, handleChange, setFieldValue } = useFormik({

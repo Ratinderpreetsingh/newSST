@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useGetAllDashbaordQuery } from "../../redux/QueryAPi/dashboard";
 import { getCookie } from "../../utils/Cookies";
 import Customer from "./Comp/Customer";
 import Shops from "./Comp/Shops";
+import { ModifyDate } from "../../utils/ModifyDate";
 
 const Dashboard = () => {
   const res= getCookie('auth')
   const page =10
-  console.log(res)
   const query ={
     cleanup: '' ,
     sorted_by: '',
@@ -19,10 +19,30 @@ const Dashboard = () => {
   const [queries,setQueries]=useState(query)
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
-  const handleQuery =(e)=>{
-    const {name,value}=e.target
-    setQueries((per)=>({...per,[name]:value}))
-  }
+  // const handleQuery =(e)=>{
+
+  //   const {name,value}=e.target
+  //   setQueries((per)=>({...per,[name]:value}))
+  // }
+  const handleQuery = (e) => {
+    const { name, checked } = e.target;
+  
+    // Only handle the 'sms' field
+    if (name === 'sms') {
+      setQueries((prev) => ({
+        ...prev,
+        [name]: checked ? 1 : 0, // Set to 1 if checked, otherwise 0
+      }));
+    } else {
+      // Handle other fields if needed
+      const { value } = e.target;
+      setQueries((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+  
   const handleClear = ()=>{
     setQueries({
       cleanup: '' ,
@@ -40,14 +60,17 @@ const Dashboard = () => {
     setSearch(e.target.value)
 
   }
+  const modifyDate = useMemo(() => ModifyDate(queries.delivery_date), [queries.delivery_date]);
+  const modifycleanup = useMemo(() => ModifyDate(queries.cleanup), [queries.cleanup]);
+
   const {data:dashbaord,isLoading}=useGetAllDashbaordQuery({page:page,
                                                             shopsearch:search,
                                                             shopstatus:status,
-                                                            cleanup: queries.cleanup,
+                                                            cleanup: modifycleanup,
                                                             sorted_by: queries.sorted_by, 
                                                             status: queries.status, 
                                                             sms:queries.sms,
-                                                            delivery_date:  queries.delivery_date,
+                                                            delivery_date:  modifyDate,
                                                             search: queries.search, 
                                                             })
   return (

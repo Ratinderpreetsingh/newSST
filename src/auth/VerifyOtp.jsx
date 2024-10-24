@@ -18,7 +18,6 @@
 //         validationSchema: otpValidation,
 //         onSubmit: async(values,{resetForm}) => {
 //             // OTP submission logic here
-//             console.log('Submitted OTP:', values);
 //             await otp(values)
 //             // resetForm()
 //         },

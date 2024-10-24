@@ -10,7 +10,7 @@ export const baseApi = createApi({
      prepareHeaders: (headers) => {
       const token = getCookie('token'); // Replace with your actual cookie name
       if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
+        headers.set('Authorization', `Bearer ${token}`); // Add 'Bearer' prefix
       }
   
       return headers;
