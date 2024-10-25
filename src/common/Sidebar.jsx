@@ -1,15 +1,24 @@
 
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import main_logo from "../assets/images/Logo.png";
 import toggle_logo from "../assets/images/toggle-logo.png";
 import { useSelector } from "react-redux";
 import { sidebarRoutes } from "../routes/sidebar";
+import { removeCookie } from "../utils/Cookies";
+import { useLogoutMutation } from "../redux/QueryAPi/auth";
 
 const Sidebar = () => {
     const { isTrue } = useSelector((state) => state?.toggle || {});
     const {pathname} = useLocation()
+    const navigate = useNavigate()
     const path = pathname.split('/').join('')
+   const [logout]= useLogoutMutation()
 
+const handleLogout =()=>{
+    logout()
+    navigate('/auth/login')
+    removeCookie('token')
+}
     return (
         <nav id="sidebar" className={`text-black ${isTrue ? 'collapsed' : ''}`}>
             <div className="logo" >
@@ -46,14 +55,21 @@ const Sidebar = () => {
                                 </ul>
                             </div>
                         ) : (
-                            <NavLink   to={`${route.path}`}  active  className="nav-link text-black">
+                            <NavLink   to={`${route.path}`}  active  className="nav-link text-black ">
                                 <i className={`bi ${route.icon} icon-normal`}></i>
                                 <i className={`bi ${route.icon} icon-collapsed`}></i>
                                 <span>{route.title}</span>
                             </NavLink>
                         )}
+                       
                     </li>
+                    
                 ))}
+                 <span  active  className="nav-link text-black cursor cursor-pointer" onClick={handleLogout}>
+                                <i className={`bi bi-box-arrow-right icon-normal`}></i>
+                                <i className={`bi bi-box-arrow-right icon-collapsed`}></i>
+                                <span >Logout</span>
+                            </span>
             </ul>
         </nav>
     );

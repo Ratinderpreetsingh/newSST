@@ -97,10 +97,10 @@ export const sidebarRoutes = [
     icon: "bi-shield-exclamation",
     submenu: false,
   },
-  {
-    title: "Logout",
-    path: "logout",
-    icon: "bi-box-arrow-right",
-    submenu: false,
-  },
+  // {
+  //   title: "Logout",
+  //   path: "logout",
+  //   icon: "bi-box-arrow-right",
+  //   submenu: false,
+  // },
 ];

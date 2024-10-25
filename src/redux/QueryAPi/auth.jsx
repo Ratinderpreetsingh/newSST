@@ -38,8 +38,15 @@ export const authApi = baseApi.injectEndpoints({
         body: credentials,
       }),
     }),
+    logout: build.mutation({
+      query: () => ({
+        url: AUTH.LOGOUT,
+        method: 'POST',
+      }),
+     
+    }),
   }),
   overrideExisting: false, 
 });
 
-export const { useLoginMutation ,useForgotMutation,useChangepasswordMutation,useOtpMutation} = authApi;
+export const { useLoginMutation ,useForgotMutation,useChangepasswordMutation,useOtpMutation,useLogoutMutation} = authApi;

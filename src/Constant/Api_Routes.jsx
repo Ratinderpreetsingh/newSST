@@ -3,6 +3,7 @@ export const AUTH = {
     OTP:"v1/check-otp",
     FORGOT: "v1/forgot-password", 
     CHANGE_PASSWORD: "v1/reset-password", 
+    LOGOUT:"v1/logout"
 
   };
   

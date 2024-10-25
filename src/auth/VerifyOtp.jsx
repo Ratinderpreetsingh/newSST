@@ -115,6 +115,7 @@ const VerifyOtp = () => {
     });
     useEffect(() => {
         if (isSuccess && data?.result) {
+            console.log(data?.access_token)
             setCookie('token', data?.access_token);
             navigate('/dashboard');
         }
