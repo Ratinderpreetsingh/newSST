@@ -28,6 +28,7 @@ import ChangePassword from './auth/ChangePassword.jsx';
 import { ToastContainer } from 'react-toastify';
 import VerifyOtp from './auth/VerifyOtp.jsx';
 import Layout from './common/Layout.jsx';
+import Edit_shop from './pages/Shops/Edit_shop.jsx';
 
 const App = () => {
   const [isAuthenticated, setAuthenticated] = useState(null);
@@ -66,6 +67,8 @@ const App = () => {
           <Route path={CustomerPath.CUSTOMER} element={<Customer />} />
           <Route path={ShopPath.ADD_SHOP} element={<AddShop />} />
           <Route path={ShopPath.SHOP} element={<Shop />} />
+          <Route path={ShopPath.EDIT_SHOP} element={<Edit_shop />} />
+
           <Route path={DefinitionPath.DEFINITION} element={<Definition />} />
           <Route path={DefinitionPath.ADD_DEFINITION} element={<AddDefinition />} />
           <Route path={DefinitionPath.DEFINITION_TEST} element={<DefinitionTest />} />

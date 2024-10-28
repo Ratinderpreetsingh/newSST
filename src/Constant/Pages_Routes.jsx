@@ -10,6 +10,8 @@ export const CustomerPath = {
 export const ShopPath = {
   ADD_SHOP: "add_shop", 
   SHOP: "shop", 
+  EDIT_SHOP: "edit_shop/:id", 
+
 };
 
 export const DefinitionPath = {

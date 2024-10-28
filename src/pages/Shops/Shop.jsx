@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useGetAllShopsQuery } from "../../redux/QueryAPi/shopApi";
 import Pagination from "../../Custom_hooks/Pagination";
 import useDebounce from "../../Custom_hooks/Debouncing";
+import { useNavigate } from "react-router-dom";
 
 const Shop = () => {
   const query ={
@@ -9,6 +10,7 @@ const Shop = () => {
     status: '',
     sms:'',
     }
+    const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1); 
   const [search, setSearch] = useState(''); 
   const debouncedTerm=useDebounce(search,300)
@@ -31,6 +33,9 @@ const Shop = () => {
      
     })
       setSearch('')
+  }
+  const handleEdit =(id)=>{
+    navigate(`/edit_shop/${id}`)
   }
   useEffect(() => {
     window.scrollTo(0, 0); // Scroll to top when the component mounts
@@ -161,7 +166,7 @@ const Shop = () => {
                       <td>
                         <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-cart"></i></button>
                         <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-bar-chart"></i></button>
-                        <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-pencil-square"></i></button>
+                        <button className="btn btn-sm btn-outline-danger p-1" onClick={()=>handleEdit(shop?.id)}><i className="bi bi-pencil-square"></i></button>
                       </td>
                     </tr>
                     }
