@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../../Custom_hooks/Debouncing";
 import { ModifyDate } from "../../utils/ModifyDate";
+import { generatePDF } from "./CustomerPdf";
+import { CustomerPath } from "../../Constant/Pages_Routes";
 
 const Customer = () => {
   const [currentPage, setCurrentPage] = useState(1); // Local state for ComponentA
@@ -16,7 +18,7 @@ const Customer = () => {
   const [sortBy, setSortBy] = useState('');
   const [sms, setSms] = useState('');
 
-  const debouncevalue = useDebounce(search,300)
+  const debouncevalue = useDebounce(search, 300)
 
   const navigate = useNavigate();
   const page = state?.currentPage;
@@ -27,7 +29,7 @@ const Customer = () => {
   const modifycleanup = useMemo(() => ModifyDate(cleanup), [cleanup]);
 
 
-  
+
   const handleSearch = (e) => {
     setSearch(e.target.value)
 
@@ -45,22 +47,27 @@ const Customer = () => {
     setCleanup('')
     setSms('')
   }
-  const { data: allCustomers, isError, isLoading, isSuccess } = useGetAllCustomersQuery({ page: currentPage,
-                                                                                          delivery_date: modifyDate , 
-                                                                                          status: status, 
-                                                                                          search: debouncevalue, 
-                                                                                          sorted_by: sortBy, 
-                                                                                          cleanup: modifycleanup,
-                                                                                          sms:sms
-                                                                                        });
+  const { data: allCustomers, isError, isLoading, isSuccess } = useGetAllCustomersQuery({
+    page: currentPage,
+    delivery_date: modifyDate,
+    status: status,
+    search: debouncevalue,
+    sorted_by: sortBy,
+    cleanup: modifycleanup,
+    sms: sms
+  });
+
+  const handleEdit =(id)=>{
+    navigate(`/view-edit-customer/${id}`)
+  }
 
   useEffect(() => {
-    window.scrollTo(0, 0); 
-}, []);
+    window.scrollTo(0, 0);
+  }, []);
 
 
 
-return (
+  return (
     <div className="content-container">
 
       <h1><i className="bi bi-speedometer2 "></i>Customer</h1>
@@ -102,7 +109,7 @@ return (
                       <b>Status</b>
                     </div>
                     <select className="form-select" aria-label="Status" value={status} onChange={(e) => setStatus(e.target.value)}>
-                      <option  value=''>Any</option>
+                      <option value=''>Any</option>
                       <option value="Clean">Clean</option>
                       <option value="Error">Error</option>
                       <option value="Unchecked">Unchecked</option>
@@ -114,13 +121,13 @@ return (
                     </div>
                     <div className="d-flex  flex-wrap">
                       <div className="form-check pe-1">
-                      <input
-    className="form-check-input"
-    type="checkbox"
-    checked={sms === 1} // Check if sms is 1 to determine the checked state
-    id="SMS"
-    onChange={handleChange}
-  />                        <label className="form-check-label" htmlFor="SMS">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          checked={sms === 1} // Check if sms is 1 to determine the checked state
+                          id="SMS"
+                          onChange={handleChange}
+                        />                        <label className="form-check-label" htmlFor="SMS">
                           SMS
                         </label>
                       </div>
@@ -157,7 +164,7 @@ return (
                     </div>
                     <div className="input-group me-2">
                       <div className="form-outline w-100" data-mdb-input-init="">
-                        <input id="search-input" type="search" className="form-control" placeholder="Search" value={search}onChange={handleSearch} />
+                        <input id="search-input" type="search" className="form-control" placeholder="Search" value={search} onChange={handleSearch} />
                       </div>
                       <span id="search-button" className="btn btn-danger position-absolute end-0">
                         <i className="bi bi-search"></i>
@@ -188,32 +195,32 @@ return (
 
                       {isLoading ? <tr ><td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Loading...</td></tr>
                         : allCustomers?.data?.length < 1 ? <tr ><td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Not Found</td></tr>
-                          : allCustomers && allCustomers?.data?.map((value, index,arr) => {
+                          : allCustomers && allCustomers?.data?.map((value, index, arr) => {
                             const serialNumber = (allCustomers?.current_page - 1) * 15 + index + 1;
                             const [month, day, year] = value?.DeliveredDate.split('/');
                             const formattedDate = `${day}/${month}/${year}`;
                             // console.log(format)
-                            return  <tr key={index}>
-                            <td>{serialNumber}</td>
-                            <td>{value?.OwnerFName + ' ' + value?.OwnerLName}</td>
-                            <td>{value?.UID}</td>
-                            <td>{value?.shop_name?.shop_name ? value?.shop_name?.shop_name : '-'}</td>
-                            <td>{value?.OwnerEmail ? value?.OwnerEmail : '-'}</td>
-                            <td>
-                              <span className={`badge ${value?.status === "Error" ? "bg-danger" : value?.status === "Unchecked" ? "bg-warning" : "bg-success"}`}>
-                                {value?.status}
-                              </span>
-                            </td>
-                            <td>{value?.input_date}</td>
-                            <td>{formattedDate}</td>
-                            <td>
-                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-file-earmark-pdf"></i></button>
-                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-eye"></i></button>
-                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-trash3"></i></button>
-                            </td>
-                          </tr>
+                            return <tr key={index}>
+                              <td>{serialNumber}</td>
+                              <td>{value?.OwnerFName + ' ' + value?.OwnerLName}</td>
+                              <td>{value?.UID}</td>
+                              <td>{value?.shop_name?.shop_name ? value?.shop_name?.shop_name : '-'}</td>
+                              <td>{value?.OwnerEmail ? value?.OwnerEmail : '-'}</td>
+                              <td>
+                                <span className={`badge ${value?.status === "Error" ? "bg-danger" : value?.status === "Unchecked" ? "bg-warning" : "bg-success"}`}>
+                                  {value?.status}
+                                </span>
+                              </td>
+                              <td>{value?.input_date}</td>
+                              <td>{formattedDate}</td>
+                              <td>
+                                <button className="btn btn-sm btn-outline-danger p-1" onClick={() => generatePDF(value)}><i className="bi bi-file-earmark-pdf"></i></button>
+                                <button className="btn btn-sm btn-outline-danger p-1" onClick={()=>handleEdit(value?.id)}><i className="bi bi-eye"></i></button>
+                                <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-trash3"></i></button>
+                              </td>
+                            </tr>
                           }
-                           
+
                           )}
 
 

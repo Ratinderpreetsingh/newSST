@@ -17,7 +17,7 @@ import Hotspot from './pages/Hotspot/Hotspot.jsx';
 import PerfectScore from './pages/PerfectScore/Perfect_score.jsx';
 import Misfire from './pages/Misfire/Misfire.jsx';
 import { useSelector } from 'react-redux';
-import { AuthPath, CustomerPath, DashboardPath, DefinitionPath, EventsPath, HotspotPath, IssuesPath, MisfirePath, ScorePath, ShopPath, SurveysPath } from './Constant/Pages_Routes.jsx';
+import { AuthPath, CustomerPath, DashboardPath, DefinitionPath, EventsPath, HotspotPath, ImportExport, IssuesPath, MisfirePath, ScorePath, ShopPath, SurveysPath } from './Constant/Pages_Routes.jsx';
 import AuthCommon from './auth/AuthCommon.jsx';
 import ForgotPassword from './auth/ForgotPassword.jsx';
 import { useEffect, useState } from 'react';
@@ -29,6 +29,10 @@ import { ToastContainer } from 'react-toastify';
 import VerifyOtp from './auth/VerifyOtp.jsx';
 import Layout from './common/Layout.jsx';
 import Edit_shop from './pages/Shops/Edit_shop.jsx';
+import AddCustomer from './pages/Customer/AddCustomer.jsx';
+import Im_Ex_Shop from './pages/Import_Export/Im_Ex_Shop.jsx';
+import Im_Ex_Customer from './pages/Import_Export/Im_Ex_Customer.jsx';
+import View_Edit from './pages/Customer/View_Edit_Customer.jsx';
 
 const App = () => {
   const [isAuthenticated, setAuthenticated] = useState(null);
@@ -65,6 +69,10 @@ const App = () => {
         <Route path="*" element={<ProtectedRoutes><Layout /></ProtectedRoutes>}>
           <Route index path={DashboardPath.DASHBOARD} element={<Dashboard />} />
           <Route path={CustomerPath.CUSTOMER} element={<Customer />} />
+          <Route path={CustomerPath.ADD_CUSTOMER} element={<AddCustomer />} />
+          <Route path={CustomerPath.VIEW_EDIT_CUSTOMER} element={<View_Edit />} />
+
+
           <Route path={ShopPath.ADD_SHOP} element={<AddShop />} />
           <Route path={ShopPath.SHOP} element={<Shop />} />
           <Route path={ShopPath.EDIT_SHOP} element={<Edit_shop />} />
@@ -72,6 +80,8 @@ const App = () => {
           <Route path={DefinitionPath.DEFINITION} element={<Definition />} />
           <Route path={DefinitionPath.ADD_DEFINITION} element={<AddDefinition />} />
           <Route path={DefinitionPath.DEFINITION_TEST} element={<DefinitionTest />} />
+
+
           <Route path={EventsPath.EVENTS} element={<Events />} />
           <Route path={SurveysPath.SURVEYS} element={<Surveys />} />
           <Route path={SurveysPath.SURVEYS_TYPE} element={<SurveyType />} />
@@ -80,7 +90,11 @@ const App = () => {
           <Route path={HotspotPath.HOTSPOT} element={<Hotspot />} />
           <Route path={ScorePath.PERFECT_SCORE} element={<PerfectScore />} />
           <Route path={MisfirePath.MISFIRE} element={<Misfire />} />
+          
+          <Route path={ImportExport.SHOP} element={<Im_Ex_Shop />} />
+          <Route path={ImportExport.CUSTOMER} element={<Im_Ex_Customer />} />
 
+          
           {/* Optional Not Found Page */}
           {/* <Route path='*' element={<NotFound />} /> */}
         </Route>

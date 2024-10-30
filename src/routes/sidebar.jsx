@@ -4,6 +4,7 @@ import {
   DefinitionPath,
   EventsPath,
   HotspotPath,
+  ImportExport,
   IssuesPath,
   MisfirePath,
   ScorePath,
@@ -20,9 +21,12 @@ export const sidebarRoutes = [
   },
   {
     title: "Customer",
-    path: CustomerPath.CUSTOMER,
+    path:'customer',
     icon: "bi-person-plus",
-    submenu: false,
+    submenu: [
+      { title: "Add Customer", path: CustomerPath.ADD_CUSTOMER},
+      { title: "Customer", path: CustomerPath.CUSTOMER },
+    ],
   },
   {
     title: "Shops",
@@ -96,6 +100,16 @@ export const sidebarRoutes = [
     path: "issue_alerts",
     icon: "bi-shield-exclamation",
     submenu: false,
+  },
+  {
+    title: "Import/Export",
+    path: "import_export",
+    icon: "bi-box-arrow-in-down",
+    submenu: [
+      { title: "Shop", path: ImportExport.SHOP },
+      { title: "Customer", path: ImportExport.CUSTOMER },
+  
+    ],
   },
   // {
   //   title: "Logout",

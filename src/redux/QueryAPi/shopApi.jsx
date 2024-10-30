@@ -25,7 +25,7 @@ export const shopApi = baseApi.injectEndpoints({
             query: (shop) => {
                 console.log("Shop data being sent:", shop);
                 return {
-                    url: 'v1/shop-add',
+                    url: `${SHOPS.ADD_SHOPS}`,
                     method: 'POST',
                     body: shop,
                 };
@@ -74,7 +74,7 @@ export const shopApi = baseApi.injectEndpoints({
                 if (!id) {
                     throw new Error("Shop ID is required");
                 }
-                return `v1/shop-edit/${id}`;
+                return `${SHOPS.EDIT_SHOPS}/${id}`;
             },
             transformResponse: (response) => {
                 if (response.error) {
@@ -84,6 +84,19 @@ export const shopApi = baseApi.injectEndpoints({
             },
            
         }),
+
+        // update SHOP
+
+        updateShop:build.mutation({
+            query:(shopUpdate)=>{
+                return{
+                    url:`${SHOPS.UPDATE_SHOPS}`,
+                    method: 'POST',
+                    body: shopUpdate,
+                }
+
+            }
+        })
         
         
         
@@ -91,4 +104,4 @@ export const shopApi = baseApi.injectEndpoints({
     overrideExisting: false,
 });
 
-export const { useGetAllShopsQuery ,useAddShopMutation,useGetShopByIdQuery } = shopApi;
+export const { useGetAllShopsQuery ,useAddShopMutation,useGetShopByIdQuery ,useUpdateShopMutation} = shopApi;

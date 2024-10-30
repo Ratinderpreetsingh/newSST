@@ -1,13 +1,11 @@
 import { useFormik } from "formik";
-import { useAddShopMutation, useGetShopByIdQuery } from "../../redux/QueryAPi/shopApi";
-import { useEffect } from "react";
+import { useUpdateShopMutation, useGetShopByIdQuery } from "../../redux/QueryAPi/shopApi";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Edit_shop = () => {
     const  {id} =   useParams()
     const {data}= useGetShopByIdQuery(id)
-    console.log(data?.data)
-    console.log(id,"sd")
     const fields = [
         {
             name: 'active',
@@ -63,18 +61,20 @@ const Edit_shop = () => {
         name_rate: data?.data?.name_rate || '',
         billing_type: data?.data?.billing_type || '',
         use_all: data?.data?.use_all || '',
+        shop_id: data?.data?.id || ''
+
     };
     
    
     const navigate = useNavigate()
-    const [addShop, { isSuccess }] = useAddShopMutation()
+    const [updateShop, { isSuccess }] = useUpdateShopMutation()
     const { values, errros, handleChange, handleSubmit, handleBlur, setFieldValue } = useFormik({
         initialValues: initialValues,
         enableReinitialize:true,
         onSubmit: (async (values, { resetForm }) => {
             try {
                 console.log('Shop added successfully:', values);
-                const response = await addShop(values).unwrap(); // Using unwrap to handle response directly
+                const response = await updateShop(values).unwrap(); // Using unwrap to handle response directly
                  console.log(response,"res")
                 resetForm();
             } catch (error) {

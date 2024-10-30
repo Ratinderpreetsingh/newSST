@@ -5,6 +5,9 @@ export const DashboardPath = {
 
 export const CustomerPath = {
   CUSTOMER: "customer", 
+  ADD_CUSTOMER:"add_customer",
+  VIEW_EDIT_CUSTOMER:"view-edit-customer/:id"
+
 };
 
 export const ShopPath = {
@@ -44,6 +47,11 @@ export const ScorePath = {
 
 export const MisfirePath = {
   MISFIRE: "misfire", 
+};
+export const ImportExport = {
+  SHOP: "import-export-shop",
+  CUSTOMER:"import-export-customer" 
+
 };
 
 export const AuthPath = {

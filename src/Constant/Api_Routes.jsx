@@ -12,12 +12,18 @@ export const DASHBOARD = {
   DASHBOARD: "v1/dashboard/lists", 
 
 
+
+
 };
   // customer
 
 
   export const CUSTOMER = {
     LIST_CUSTOMERS: "v1/customer-list", 
+    ADD_CUSTOMERS: "v1/customer-add", 
+    EDIT_CUSTOMERS: "v1/customer-edit", 
+
+ 
  
 
   };
@@ -25,7 +31,11 @@ export const DASHBOARD = {
   // shps
 
   export const SHOPS ={
-    LIST_SHOPS :"v1/shop-list"
+    LIST_SHOPS :"v1/shop-list",
+    ADD_SHOPS :"v1/shop-add",
+    EDIT_SHOPS :"v1/shop-edit",
+    UPDATE_SHOPS :"v1/shop-update"
+
   }
   
 
