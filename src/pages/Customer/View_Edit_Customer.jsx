@@ -1,16 +1,22 @@
+
+
 import { useFormik } from "formik";
 import { customerValidation } from "../../Validation/customer";
-import { useAddCustomerMutation, useGetCustomerByIdQuery } from "../../redux/QueryAPi/customer";
-import { useParams } from "react-router-dom";
-import { useState } from "react";
+import {  useGetCustomerByIdQuery, useUpdateCustomerMutation } from "../../redux/QueryAPi/customer";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ModifyDate } from "../../utils/ModifyDate";
+import { useGetAllShopsNameQuery } from "../../redux/QueryAPi/shopApi";
 
 const View_Edit = () => {
-    const [addCustomer] = useAddCustomerMutation()
+    const [updateCustomer,{isSuccess}] = useUpdateCustomerMutation()
     const  {id} =   useParams()
+    const selectRef = useRef(null)
     const {data}= useGetCustomerByIdQuery(id)
-    const [isEdit,setEdit]=useState(false)
-
+    const [isEdit,setEdit]=useState(true)
+    const navigate = useNavigate()
     const initialValues = {
+        customer_id:id,
         status: data?.data?.status || '',
         OwnerFName: data?.data?.OwnerFName || '',
         OwnerLName: data?.data?.OwnerLName || '',
@@ -60,32 +66,51 @@ const View_Edit = () => {
         scheduled_dm: data?.data?.scheduled_dm || '',
         UID: data?.data?.UID || '2' // Default value if not provided
     };
-    
-    const { values, errors, handleChange, handleSubmit, handleBlur, touched } = useFormik({
+    const { data: shopList, error, } = useGetAllShopsNameQuery();
+    const { values, errors, handleChange, handleSubmit, handleBlur, touched, setFieldValue } = useFormik({
         initialValues,
         validationSchema: customerValidation,
         enableReinitialize:true,
+     
         onSubmit: async (values) => {
             console.log(values)
+            const modifiedValues = {
+                ...values,
+                VehicleArrivedDate: ModifyDate(values.VehicleArrivedDate),
+                RepairStartedDate: ModifyDate(values.RepairStartedDate),
+                DeliveredDate: ModifyDate(values.DeliveredDate),
+                // Add other date fields here as needed
+            };
             try {
-                await addCustomer(values)
+                await updateCustomer(modifiedValues)
             } catch (error) {
                 console.log(error)
             }
 
         }
     })
+    const handleScroll = (event) => {
+        console.log('Scroll event:', event);
+        // You can log additional info, like the current scroll position
+        console.log('ScrollTop:', event.target.scrollTop);
+      };
+    useEffect(() => {
+        if (isSuccess) {
+
+            navigate('/customer')
+        }
+    }, [isSuccess])
     return (
         <div className="content-container">
             <div className="bg-white py-3">
                 <div className="container">
                     <div className="d-flex">
                         <i className="bi bi-info-circle site-color"></i> &nbsp;
-                        <h5>Add Customer</h5>
+                        <h5>View/Edit Customer</h5>
                     </div>
                     <div className="row mt-1">
                         <div className="col-lg-12">
-                            <div className="d-flex justify-content-between align-items-center">
+                        <div className="d-flex justify-content-between align-items-center">
                             <nav>
                                 <div className="nav nav-tabs border-bottom" id="nav-tab" role="tablist">
                                     <div className="tab-nav-link active px-2 py-2" id="nav-shop-tab" data-bs-toggle="tab"
@@ -100,22 +125,16 @@ const View_Edit = () => {
                                 
                             </nav>
                             <div className="mr-4" style={{marginRight:'12px'}}>
-                            <input type="checkbox" id="edit" name="edit" checked={isEdit} onClick={()=>setEdit(!isEdit)} />
-                            <label htmlFor="edit" className="floating-label">Edit</label>
+                            <input type="checkbox" id="edit" name="edit" checked={!isEdit} onClick={()=>setEdit(!isEdit)} />
+                            <label htmlFor="edit" className="floating-label" style={{paddingLeft:'5px',fontWeight:'bold'}}>Edit</label>
                             </div>
                             </div>
-                            
                             <div className="tab-content" id="nav-tabContent">
                                 <div className="tab-pane fade show active" id="nav-shop" role="tabpanel" aria-labelledby="nav-shop-tab" tabindex="0">
                                     <div className="container mt-3">
                                         {/* Owner Details */}
                                         <div className="row">
-                                            <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
-                                                    <input type="text" id="status" className="form-control" placeholder=" " name="status" value={values.status} onChange={handleChange} onBlur={handleBlur} required disabled={isEdit}  />
-                                                    <label htmlFor="status" className="floating-label">Status <span>*</span></label>
-                                                </div>
-                                            </div>
+
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
                                                     <input type="text" id="OwnerFName" className="form-control" placeholder=" " name="OwnerFName" value={values.OwnerFName} onChange={handleChange} onBlur={handleBlur} required disabled={isEdit} />
@@ -126,6 +145,22 @@ const View_Edit = () => {
                                                 <div className="form-label-group in-border">
                                                     <input type="text" id="OwnerLName" className="form-control" placeholder=" " name="OwnerLName" value={values.OwnerLName} onChange={handleChange} onBlur={handleBlur} required disabled={isEdit} />
                                                     <label htmlFor="OwnerLName" className="floating-label">Owner Last Name <span>*</span></label>
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4 col-md-4">
+                                                <div className="form-label-group in-border">
+                                                    <select type="text" id="status" className="form-control" placeholder=" " name="status"
+                                                        value={values.status} onChange={handleChange} onBlur={handleBlur}
+                                                        required disabled={isEdit}
+                                                    >
+                                                        <option disabled selected>Select</option>
+
+                                                        <option value={'Clean'}>Clean</option>
+                                                        <option value={'Error'}>Error</option>
+                                                        <option value={'UnChecked'}>UnChecked</option>
+
+                                                    </select>
+                                                    <label htmlFor="status" className="floating-label">Status <span>*</span></label>
                                                 </div>
                                             </div>
                                         </div>
@@ -202,13 +237,13 @@ const View_Edit = () => {
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="VehicleArrivedDate" className="form-control" placeholder=" " name="VehicleArrivedDate" value={values.VehicleArrivedDate} onChange={handleChange} onBlur={handleBlur} required disabled={isEdit} />
+                                                    <input type="date" id="VehicleArrivedDate" className="form-control" placeholder=" " name="VehicleArrivedDate" value={values.VehicleArrivedDate} onChange={handleChange} onBlur={handleBlur} required disabled={isEdit} />
                                                     <label htmlFor="VehicleArrivedDate" className="floating-label">Vehicle Arrived Date <span>*</span></label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="RepairStartedDate" className="form-control" placeholder=" " name="RepairStartedDate" value={values.RepairStartedDate} onChange={handleChange} onBlur={handleBlur} required disabled={isEdit} />
+                                                    <input type="date" id="RepairStartedDate" className="form-control" placeholder=" " name="RepairStartedDate" value={values.RepairStartedDate} onChange={handleChange} onBlur={handleBlur} required disabled={isEdit} />
                                                     <label htmlFor="RepairStartedDate" className="floating-label">Repair Started Date <span>*</span></label>
                                                 </div>
                                             </div>
@@ -217,13 +252,15 @@ const View_Edit = () => {
                                         <div className="row">
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="DeliveredDate" className="form-control" placeholder=" " name="DeliveredDate" value={values.DeliveredDate} onChange={handleChange} onBlur={handleBlur} required disabled={isEdit} />
+                                                    <input type="date" id="DeliveredDate" className="form-control" placeholder=" " name="DeliveredDate" value={values.DeliveredDate} 
+                                                    onChange={handleChange}
+                                                     onBlur={handleBlur} required disabled={isEdit} />
                                                     <label htmlFor="DeliveredDate" className="floating-label">Delivered Date <span>*</span></label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="VehicleYear" className="form-control" placeholder=" " name="VehicleYear" value={values.VehicleYear} onChange={handleChange} onBlur={handleBlur} required disabled={isEdit} />
+                                                    <input type="date" id="VehicleYear" className="form-control" placeholder=" " name="VehicleYear" value={values.VehicleYear} onChange={handleChange} onBlur={handleBlur} required disabled={isEdit} />
                                                     <label htmlFor="VehicleYear" className="floating-label">Vehicle Year <span>*</span></label>
                                                 </div>
                                             </div>
@@ -244,7 +281,26 @@ const View_Edit = () => {
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="BusinessKeyPSG" className="form-control" placeholder=" " name="BusinessKeyPSG" value={values.BusinessKeyPSG} onChange={handleChange} onBlur={handleBlur} required disabled={isEdit} />
+                                                    <select
+                                                        id="BusinessKeyPSG"
+                                                        className="form-control"
+                                                        name="BusinessKeyPSG"
+                                                        value={values.BusinessKeyPSG}
+                                                        onScroll={handleScroll}
+                                                        ref={selectRef}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        required disabled={isEdit}
+                                                        aria-label="Select a business"
+                                                    >
+                                                        <option value="" disabled>Select</option>
+                                                        {shopList?.data?.map((shop, index) => (
+                                                            <option key={shop.psg_id} value={shop.psg_id}>
+                                                                {shop?.shop_name}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+
                                                     <label htmlFor="BusinessKeyPSG" className="floating-label">Business Key PSG <span>*</span></label>
                                                 </div>
                                             </div>
@@ -259,19 +315,19 @@ const View_Edit = () => {
                                         <div className="row">
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="input_source" className="form-control" placeholder=" " name="input_source" value={values.input_source} onChange={handleChange} onBlur={handleBlur} disabled={isEdit}  />
+                                                    <input type="text" id="input_source" className="form-control" placeholder=" " name="input_source" value={values.input_source} onChange={handleChange} onBlur={handleBlur} disabled={isEdit}/>
                                                     <label htmlFor="input_source" className="floating-label">Input Source</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="merge_key" className="form-control" placeholder=" " name="merge_key" value={values.merge_key} onChange={handleChange} onBlur={handleBlur} disabled={isEdit}  />
+                                                    <input type="text" id="merge_key" className="form-control" placeholder=" " name="merge_key" value={values.merge_key} onChange={handleChange} onBlur={handleBlur} disabled={isEdit}/>
                                                     <label htmlFor="merge_key" className="floating-label">Merge Key</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="input_date" className="form-control" placeholder=" " name="input_date" value={values.input_date} onChange={handleChange} onBlur={handleBlur}  disabled={isEdit} />
+                                                    <input type="text" id="input_date" className="form-control" placeholder=" " name="input_date" value={values.input_date} onChange={handleChange} onBlur={handleBlur} disabled={isEdit} />
                                                     <label htmlFor="input_date" className="floating-label">Input Date</label>
                                                 </div>
                                             </div>
@@ -286,7 +342,7 @@ const View_Edit = () => {
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="name_prefix" className="form-control" placeholder=" " name="name_prefix" value={values.name_prefix} onChange={handleChange} onBlur={handleBlur} disabled={isEdit} />
+                                                    <input type="text" id="name_prefix" className="form-control" placeholder=" " name="name_prefix" value={values.name_prefix} onChange={handleChange} onBlur={handleBlur} disabled={isEdit}/>
                                                     <label htmlFor="name_prefix" className="floating-label">Name Prefix</label>
                                                 </div>
                                             </div>
@@ -391,7 +447,7 @@ const View_Edit = () => {
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="BodyTechFullName" className="form-control" placeholder=" " name="BodyTechFullName" value={values.BodyTechFullName} onChange={handleChange} onBlur={handleBlur}disabled={isEdit}  />
+                                                    <input type="text" id="BodyTechFullName" className="form-control" placeholder=" " name="BodyTechFullName" value={values.BodyTechFullName} onChange={handleChange} onBlur={handleBlur} disabled={isEdit}/>
                                                     <label htmlFor="BodyTechFullName" className="floating-label">Body Tech Full Name</label>
                                                 </div>
                                             </div>
@@ -406,19 +462,36 @@ const View_Edit = () => {
                                         <div className="row">
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="checkbox" id="update_definitions_on_save" name="update_definitions_on_save" checked={values.update_definitions_on_save} onChange={handleChange} disabled={isEdit}  />
+                                                    <input type="checkbox" id="update_definitions_on_save" name="update_definitions_on_save" disabled={isEdit}
+                                                        checked={values.update_definitions_on_save === 1} // Check if value is 1
+                                                        onChange={(e) => {
+                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            setFieldValue("update_definitions_on_save", value); // Use setFieldValue
+                                                        }}
+                                                    />
                                                     <label htmlFor="update_definitions_on_save" className="floating-label">Update Definitions on Save</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="checkbox" id="sms_log" name="sms_log" checked={values.sms_log} onChange={handleChange} disabled={isEdit} />
+                                                    <input type="checkbox" id="sms_log" name="sms_log" disabled={isEdit}
+                                                        checked={values.sms_log === 1} // Check if value is 1
+                                                        onChange={(e) => {
+                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            setFieldValue("sms_log", value); // Use setFieldValue
+                                                        }}
+                                                    />
                                                     <label htmlFor="sms_log" className="floating-label">SMS Log</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="checkbox" id="invalidron" name="invalidron" checked={values.invalidron} onChange={handleChange} disabled={isEdit} />
+                                                    <input type="checkbox" id="invalidron" name="invalidron" disabled={isEdit}
+                                                        checked={values.invalidron === 1} // Check if value is 1
+                                                        onChange={(e) => {
+                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            setFieldValue("invalidron", value); // Use setFieldValue
+                                                        }} />
                                                     <label htmlFor="invalidron" className="floating-label">Invalid RO Number</label>
                                                 </div>
                                             </div>
@@ -427,13 +500,23 @@ const View_Edit = () => {
                                         <div className="row">
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="checkbox" id="sst_definitions" name="sst_definitions" checked={values.sst_definitions} onChange={handleChange}disabled={isEdit}  />
+                                                    <input type="checkbox" id="sst_definitions" name="sst_definitions" disabled={isEdit}
+                                                        checked={values.sst_definitions === 1} // Check if value is 1
+                                                        onChange={(e) => {
+                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            setFieldValue("sst_definitions", value); // Use setFieldValue
+                                                        }} />
                                                     <label htmlFor="sst_definitions" className="floating-label">SST Definitions</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="checkbox" id="scheduled_dm" name="scheduled_dm" checked={values.scheduled_dm} onChange={handleChange} />
+                                                    <input type="checkbox" id="scheduled_dm" name="scheduled_dm" disabled={isEdit}
+                                                        checked={values.scheduled_dm === 1} // Check if value is 1
+                                                        onChange={(e) => {
+                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            setFieldValue("scheduled_dm", value); // Use setFieldValue
+                                                        }} />
                                                     <label htmlFor="scheduled_dm" className="floating-label">Scheduled DM</label>
                                                 </div>
                                             </div>

@@ -6,7 +6,7 @@ export const shopApi = baseApi.injectEndpoints({
 
     endpoints: (build) => ({
         getAllShops: build.query({
-            query: ({ page,search,status,sorted_by}) => {
+            query: ({ page, search, status, sorted_by }) => {
                 // debugger
                 return `${SHOPS.LIST_SHOPS}?page=${page}&search=${search}&status=${status}&sorted_by=${sorted_by}
                                             `;
@@ -17,7 +17,18 @@ export const shopApi = baseApi.injectEndpoints({
             providesTags: ['Shop'],
 
         }),
+        // dropdownlist
+        getAllShopsName: build.query({
+            query: () => {
+                // debugger
+                return `${SHOPS.DROP_DOWN_SHOPS}
+                                    `;
+            },
+            transformResponse: (response) => {
+                return response;
+            },
 
+        }),
 
         // add shops
 
@@ -39,32 +50,28 @@ export const shopApi = baseApi.injectEndpoints({
             //     }
             //     return response; // Modify based on actual response structure
             // },
-            //     async onQueryStarted(args,{queryFulfilled,dispatch}){
-
-            //     try {
-
-            //         const {data:createShop}=await queryFulfilled
-
-            //         console.log(createShop,"ceeate")
-
-            //         dispatch(
-
-            //             shopApi.util.updateQueryData('getAllShops',undefined,(draft)=>{
-
-            //                 if (createShop?.data) {
-            //                     draft.unshift(createShop.data); // Add the new shop data
-            //                 }
-            //             })
-
-            //         )
-
-            //     } catch (error) {
-
-            //         console.log(error)
-
-            //     }
-
-            // }
+            async onQueryStarted(args,{queryFulfilled,dispatch}){
+                try {
+                  const {data:createdShop}=await queryFulfilled
+                  console.log(createdShop,"CREATE")
+                  debugger
+                  dispatch(
+                    
+                    shopApi.util.updateQueryData('getAllShops',undefined,(draft)=>{
+                      debugger
+                      console.log(JSON.stringify(draft),"DREAFT")
+                      if (Array.isArray(draft)) {
+                        draft.push(createdShop.data);
+                      } else {
+                        console.warn("Draft is not an array:", draft);
+                      }
+                      
+                    })
+                  )
+                } catch (error) {
+                  console.log(error)
+                }
+              }
         }),
 
         // get edit
@@ -82,26 +89,26 @@ export const shopApi = baseApi.injectEndpoints({
                 }
                 return response; // Return the shop data for editing
             },
-           
+
         }),
 
         // update SHOP
 
-        updateShop:build.mutation({
-            query:(shopUpdate)=>{
-                return{
-                    url:`${SHOPS.UPDATE_SHOPS}`,
+        updateShop: build.mutation({
+            query: (shopUpdate) => {
+                return {
+                    url: `${SHOPS.UPDATE_SHOPS}`,
                     method: 'POST',
                     body: shopUpdate,
                 }
 
             }
         })
-        
-        
-        
+
+
+
     }),
     overrideExisting: false,
 });
 
-export const { useGetAllShopsQuery ,useAddShopMutation,useGetShopByIdQuery ,useUpdateShopMutation} = shopApi;
+export const { useGetAllShopsQuery, useGetAllShopsNameQuery, useAddShopMutation, useGetShopByIdQuery, useUpdateShopMutation } = shopApi;

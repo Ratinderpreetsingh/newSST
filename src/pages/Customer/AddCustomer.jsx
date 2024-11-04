@@ -1,10 +1,15 @@
 import { useFormik } from "formik";
 import { customerValidation } from "../../Validation/customer";
 import { useAddCustomerMutation } from "../../redux/QueryAPi/customer";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useGetAllShopsNameQuery } from "../../redux/QueryAPi/shopApi";
+import { ModifyDate } from "../../utils/ModifyDate";
 
 const AddCustomer = () => {
-    const [addCustomer,{ isSuccess,isLoading }] = useAddCustomerMutation()
+    const navigate = useNavigate()
+    const selectRef = useRef(null)
+    const [addCustomer, { isSuccess, isLoading }] = useAddCustomerMutation()
     const initialValues = {
         status: '',
         OwnerFName: '',
@@ -48,33 +53,46 @@ const AddCustomer = () => {
         EstimatorName: '',
         BodyTechFullName: '',
         PaintTechFullName: '',
-        update_definitions_on_save: false,
-        sms_log: '',
-        invalidron: false,
-        sst_definitions: '',
-        scheduled_dm: '',
-        UID:'2'
+        update_definitions_on_save: 0,
+        sms_log: 0,
+        invalidron: 0,
+        sst_definitions: 0,
+        scheduled_dm: 0,
+        UID: '2'
     };
-
-    const { values, errors, handleChange, handleSubmit, handleBlur, touched } = useFormik({
+    const { data: shopList, error, } = useGetAllShopsNameQuery();
+ModifyDate()
+    const { values, errors, handleChange, handleSubmit, handleBlur, touched, setFieldValue } = useFormik({
         initialValues,
         validationSchema: customerValidation,
         onSubmit: async (values) => {
             console.log(values)
+            const modifiedValues = {
+                ...values,
+                VehicleArrivedDate: ModifyDate(values.VehicleArrivedDate),
+                RepairStartedDate: ModifyDate(values.RepairStartedDate),
+                DeliveredDate: ModifyDate(values.DeliveredDate),
+                // Add other date fields here as needed
+            };
             try {
-                await addCustomer(values)
+                await addCustomer(modifiedValues)
             } catch (error) {
                 console.log(error)
             }
 
         }
     })
+    const handleScroll = (event) => {
+        console.log('Scroll event:', event);
+        // You can log additional info, like the current scroll position
+        console.log('ScrollTop:', event.target.scrollTop);
+      };
     useEffect(() => {
         if (isSuccess) {
-    
-          navigate('/customers')
+
+            navigate('/customer')
         }
-      }, [isSuccess])
+    }, [isSuccess])
     return (
         <div className="content-container">
             <div className="bg-white py-3">
@@ -102,12 +120,7 @@ const AddCustomer = () => {
                                     <div className="container mt-3">
                                         {/* Owner Details */}
                                         <div className="row">
-                                            <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
-                                                    <input type="text" id="status" className="form-control" placeholder=" " name="status" value={values.status} onChange={handleChange} onBlur={handleBlur} required />
-                                                    <label htmlFor="status" className="floating-label">Status <span>*</span></label>
-                                                </div>
-                                            </div>
+
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
                                                     <input type="text" id="OwnerFName" className="form-control" placeholder=" " name="OwnerFName" value={values.OwnerFName} onChange={handleChange} onBlur={handleBlur} required />
@@ -118,6 +131,22 @@ const AddCustomer = () => {
                                                 <div className="form-label-group in-border">
                                                     <input type="text" id="OwnerLName" className="form-control" placeholder=" " name="OwnerLName" value={values.OwnerLName} onChange={handleChange} onBlur={handleBlur} required />
                                                     <label htmlFor="OwnerLName" className="floating-label">Owner Last Name <span>*</span></label>
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4 col-md-4">
+                                                <div className="form-label-group in-border">
+                                                    <select type="text" id="status" className="form-control" placeholder=" " name="status"
+                                                        value={values.status} onChange={handleChange} onBlur={handleBlur}
+                                                        required
+                                                    >
+                                                        <option disabled selected>Select</option>
+
+                                                        <option value={'Clean'}>Clean</option>
+                                                        <option value={'Error'}>Error</option>
+                                                        <option value={'UnChecked'}>UnChecked</option>
+
+                                                    </select>
+                                                    <label htmlFor="status" className="floating-label">Status <span>*</span></label>
                                                 </div>
                                             </div>
                                         </div>
@@ -194,13 +223,13 @@ const AddCustomer = () => {
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="VehicleArrivedDate" className="form-control" placeholder=" " name="VehicleArrivedDate" value={values.VehicleArrivedDate} onChange={handleChange} onBlur={handleBlur} required />
+                                                    <input type="date" id="VehicleArrivedDate" className="form-control" placeholder=" " name="VehicleArrivedDate" value={values.VehicleArrivedDate} onChange={handleChange} onBlur={handleBlur} required />
                                                     <label htmlFor="VehicleArrivedDate" className="floating-label">Vehicle Arrived Date <span>*</span></label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="RepairStartedDate" className="form-control" placeholder=" " name="RepairStartedDate" value={values.RepairStartedDate} onChange={handleChange} onBlur={handleBlur} required />
+                                                    <input type="date" id="RepairStartedDate" className="form-control" placeholder=" " name="RepairStartedDate" value={values.RepairStartedDate} onChange={handleChange} onBlur={handleBlur} required />
                                                     <label htmlFor="RepairStartedDate" className="floating-label">Repair Started Date <span>*</span></label>
                                                 </div>
                                             </div>
@@ -209,13 +238,15 @@ const AddCustomer = () => {
                                         <div className="row">
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="DeliveredDate" className="form-control" placeholder=" " name="DeliveredDate" value={values.DeliveredDate} onChange={handleChange} onBlur={handleBlur} required />
+                                                    <input type="date" id="DeliveredDate" className="form-control" placeholder=" " name="DeliveredDate" value={values.DeliveredDate} 
+                                                    onChange={handleChange}
+                                                     onBlur={handleBlur} required />
                                                     <label htmlFor="DeliveredDate" className="floating-label">Delivered Date <span>*</span></label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="VehicleYear" className="form-control" placeholder=" " name="VehicleYear" value={values.VehicleYear} onChange={handleChange} onBlur={handleBlur} required />
+                                                    <input type="date" id="VehicleYear" className="form-control" placeholder=" " name="VehicleYear" value={values.VehicleYear} onChange={handleChange} onBlur={handleBlur} required />
                                                     <label htmlFor="VehicleYear" className="floating-label">Vehicle Year <span>*</span></label>
                                                 </div>
                                             </div>
@@ -236,7 +267,26 @@ const AddCustomer = () => {
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="text" id="BusinessKeyPSG" className="form-control" placeholder=" " name="BusinessKeyPSG" value={values.BusinessKeyPSG} onChange={handleChange} onBlur={handleBlur} required />
+                                                    <select
+                                                        id="BusinessKeyPSG"
+                                                        className="form-control"
+                                                        name="BusinessKeyPSG"
+                                                        value={values.BusinessKeyPSG}
+                                                        onScroll={handleScroll}
+                                                        ref={selectRef}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        required
+                                                        aria-label="Select a business"
+                                                    >
+                                                        <option value="" disabled>Select</option>
+                                                        {shopList?.data?.map((shop, index) => (
+                                                            <option key={shop.psg_id} value={shop.psg_id}>
+                                                                {shop?.shop_name}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+
                                                     <label htmlFor="BusinessKeyPSG" className="floating-label">Business Key PSG <span>*</span></label>
                                                 </div>
                                             </div>
@@ -398,19 +448,36 @@ const AddCustomer = () => {
                                         <div className="row">
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="checkbox" id="update_definitions_on_save" name="update_definitions_on_save" checked={values.update_definitions_on_save} onChange={handleChange} />
+                                                    <input type="checkbox" id="update_definitions_on_save" name="update_definitions_on_save"
+                                                        checked={values.update_definitions_on_save === 1} // Check if value is 1
+                                                        onChange={(e) => {
+                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            setFieldValue("update_definitions_on_save", value); // Use setFieldValue
+                                                        }}
+                                                    />
                                                     <label htmlFor="update_definitions_on_save" className="floating-label">Update Definitions on Save</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="checkbox" id="sms_log" name="sms_log" checked={values.sms_log} onChange={handleChange} />
+                                                    <input type="checkbox" id="sms_log" name="sms_log"
+                                                        checked={values.sms_log === 1} // Check if value is 1
+                                                        onChange={(e) => {
+                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            setFieldValue("sms_log", value); // Use setFieldValue
+                                                        }}
+                                                    />
                                                     <label htmlFor="sms_log" className="floating-label">SMS Log</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="checkbox" id="invalidron" name="invalidron" checked={values.invalidron} onChange={handleChange} />
+                                                    <input type="checkbox" id="invalidron" name="invalidron"
+                                                        checked={values.invalidron === 1} // Check if value is 1
+                                                        onChange={(e) => {
+                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            setFieldValue("invalidron", value); // Use setFieldValue
+                                                        }} />
                                                     <label htmlFor="invalidron" className="floating-label">Invalid RO Number</label>
                                                 </div>
                                             </div>
@@ -419,13 +486,23 @@ const AddCustomer = () => {
                                         <div className="row">
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="checkbox" id="sst_definitions" name="sst_definitions" checked={values.sst_definitions} onChange={handleChange} />
+                                                    <input type="checkbox" id="sst_definitions" name="sst_definitions"
+                                                        checked={values.sst_definitions === 1} // Check if value is 1
+                                                        onChange={(e) => {
+                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            setFieldValue("sst_definitions", value); // Use setFieldValue
+                                                        }} />
                                                     <label htmlFor="sst_definitions" className="floating-label">SST Definitions</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    <input type="checkbox" id="scheduled_dm" name="scheduled_dm" checked={values.scheduled_dm} onChange={handleChange} />
+                                                    <input type="checkbox" id="scheduled_dm" name="scheduled_dm"
+                                                        checked={values.scheduled_dm === 1} // Check if value is 1
+                                                        onChange={(e) => {
+                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            setFieldValue("scheduled_dm", value); // Use setFieldValue
+                                                        }} />
                                                     <label htmlFor="scheduled_dm" className="floating-label">Scheduled DM</label>
                                                 </div>
                                             </div>

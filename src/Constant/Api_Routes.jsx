@@ -22,6 +22,8 @@ export const DASHBOARD = {
     LIST_CUSTOMERS: "v1/customer-list", 
     ADD_CUSTOMERS: "v1/customer-add", 
     EDIT_CUSTOMERS: "v1/customer-edit", 
+    UPDATE_CUSTOMERS: "v1/customer-update", 
+
 
  
  
@@ -34,7 +36,9 @@ export const DASHBOARD = {
     LIST_SHOPS :"v1/shop-list",
     ADD_SHOPS :"v1/shop-add",
     EDIT_SHOPS :"v1/shop-edit",
-    UPDATE_SHOPS :"v1/shop-update"
+    UPDATE_SHOPS :"v1/shop-update",
+    DROP_DOWN_SHOPS :"v1/shop-all",
+
 
   }
   
