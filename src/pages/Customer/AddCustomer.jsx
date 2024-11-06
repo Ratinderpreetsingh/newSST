@@ -12,9 +12,9 @@ const AddCustomer = () => {
     const navigate = useNavigate()
     const selectRef = useRef(null)
     // const { csvFile, loading: csvFileLoading, error: csvError, handleCsvFileUpload } = useImportCsv()
-    const [addCustomer, { isSuccess, isLoading }] = useAddCustomerMutation()
-    const {csvFile,handleCsvFileUpload,error:csvError}=useImportCsvFile()
-    const [importCustomerCSV, { isSuccess:csvSuceess,isLoading:csvLoading }]=useImportCustomerCSVMutation()
+    const [addCustomer, { isSuccess, isLoading ,isError,data}] = useAddCustomerMutation()
+    const { csvFile, handleCsvFileUpload, error: csvError } = useImportCsvFile()
+    const [importCustomerCSV, { isSuccess: csvSuceess, isLoading: csvLoading }] = useImportCustomerCSVMutation()
     const initialValues = {
         status: '',
         OwnerFName: '',
@@ -63,14 +63,17 @@ const AddCustomer = () => {
         invalidron: 0,
         sst_definitions: 0,
         scheduled_dm: 0,
-        UID: '2'
+        UID: Math.floor(Math.random() * 100) || '-',
     };
-    const { data: shopList, error, } = useGetAllShopsNameQuery();
+    const { data: shopList, error, } = useGetAllShopsNameQuery(name='');
     const { values, errors, handleChange, handleSubmit, handleBlur, touched, setFieldValue } = useFormik({
         initialValues,
         validationSchema: customerValidation,
         onSubmit: async (values) => {
             console.log(values)
+            if (!values.signatureText) {
+                errors.signatureText = "Signature text is required";
+              }
             const modifiedValues = {
                 ...values,
                 VehicleArrivedDate: ModifyDate(values.VehicleArrivedDate),
@@ -86,8 +89,8 @@ const AddCustomer = () => {
 
         }
     })
-    console.log(csvFile)
-    const handleUploadCsvFile=async()=>{
+    console.log(isError,data,"isError")
+    const handleUploadCsvFile = async () => {
         try {
             await importCustomerCSV(csvFile); // Assuming this is an async mutation
 
@@ -103,13 +106,13 @@ const AddCustomer = () => {
         // You can log additional info, like the current scroll position
         console.log('ScrollTop:', event.target.scrollTop);
     };
-    
+
     useEffect(() => {
-        if (isSuccess||csvSuceess) {
+        if (isSuccess || csvSuceess) {
 
             navigate('/customer')
         }
-    }, [isSuccess,csvSuceess])
+    }, [isSuccess, csvSuceess])
     return (
         <div className="content-container">
             <div className="bg-white py-3">
@@ -153,7 +156,7 @@ const AddCustomer = () => {
                                                         aria-describedby="OwnerFName" // For accessibility
                                                     />
                                                     <label htmlFor="OwnerFName" className="floating-label">
-                                                        Shop Name <span className="text-danger">*</span>
+                                                        Owner First Name <span className="text-danger">*</span>
                                                     </label>
                                                     {/* Validation Error */}
                                                     {touched.OwnerFName && errors.OwnerFName ? (
@@ -200,12 +203,14 @@ const AddCustomer = () => {
                                                         value={values.status}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+
                                                         required
                                                     >
-                                                        <option disabled selected>Select</option>
-                                                        <option value={'Clean'}>Clean</option>
+    <option value="" disabled selected>Select</option>  {/* Default option */}
+    <option value={'Clean'}>Clean</option>
                                                         <option value={'Error'}>Error</option>
-                                                        <option value={'UnChecked'}>UnChecked</option>
+                                                        <option value={'Unchecked'}>UnChecked</option>
                                                     </select>
                                                     <label htmlFor="status" className="floating-label">
                                                         Status <span>*</span>
@@ -232,6 +237,8 @@ const AddCustomer = () => {
                                                         value={values.OwnerCompanyName}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+
                                                         required
                                                     />
                                                     <label htmlFor="OwnerCompanyName" className="floating-label">
@@ -259,6 +266,8 @@ const AddCustomer = () => {
                                                         value={values.RONumber}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+
                                                         required
                                                     />
                                                     <label htmlFor="RONumber" className="floating-label">
@@ -284,6 +293,8 @@ const AddCustomer = () => {
                                                         value={values.CSRName}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+
                                                         required
                                                     />
                                                     <label htmlFor="CSRName" className="floating-label">
@@ -311,6 +322,8 @@ const AddCustomer = () => {
                                                         value={values.OwnerAddress1}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+
                                                         required
                                                     />
                                                     <label htmlFor="OwnerAddress1" className="floating-label">
@@ -331,15 +344,18 @@ const AddCustomer = () => {
                                                     <input
                                                         type="text"
                                                         id="OwnerAddress2"
-                                                        className="form-control"
+                                                        className={`form-control `}
                                                         name="OwnerAddress2"
                                                         value={values.OwnerAddress2}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+
                                                     />
                                                     <label htmlFor="OwnerAddress2" className="floating-label">
                                                         Address 2
                                                     </label>
+
                                                 </div>
                                             </div>
 
@@ -354,6 +370,8 @@ const AddCustomer = () => {
                                                         value={values.OwnerCity}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+
                                                         required
                                                     />
                                                     <label htmlFor="OwnerCity" className="floating-label">
@@ -470,18 +488,21 @@ const AddCustomer = () => {
                                                     <input
                                                         type="date"
                                                         id="VehicleArrivedDate"
-                                                        className={`form-control ${touched.VehicleArrivedDate && errors.VehicleArrivedDate ? 'is-invalid' : ''}`}
+                                                        className={`form-control ${touched.VehicleArrivedDate && errors.VehicleArrivedDate ? '' : ''}`}
                                                         name="VehicleArrivedDate"
                                                         value={values.VehicleArrivedDate}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        min={new Date().toISOString().split('T')[0]} // This sets the min to today's date
+
                                                         required
                                                     />
                                                     <label htmlFor="VehicleArrivedDate" className="floating-label">
                                                         Vehicle Arrived Date <span className="text-danger">*</span>
                                                     </label>
                                                     {touched.VehicleArrivedDate && errors.VehicleArrivedDate && (
-                                                        <div className="invalid-feedback">{errors.VehicleArrivedDate}</div>
+                                                        <div style={{color:'#DC3545'}} className="">{errors.VehicleArrivedDate}</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -492,18 +513,21 @@ const AddCustomer = () => {
                                                     <input
                                                         type="date"
                                                         id="RepairStartedDate"
-                                                        className={`form-control ${touched.RepairStartedDate && errors.RepairStartedDate ? 'is-invalid' : ''}`}
+                                                        className={`form-control ${touched.RepairStartedDate && errors.RepairStartedDate ? '' : ''}`}
                                                         name="RepairStartedDate"
                                                         value={values.RepairStartedDate}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        min={new Date().toISOString().split('T')[0]} // This sets the min to today's date
+
                                                         required
                                                     />
                                                     <label htmlFor="RepairStartedDate" className="floating-label">
                                                         Repair Started Date <span className="text-danger">*</span>
                                                     </label>
                                                     {touched.RepairStartedDate && errors.RepairStartedDate && (
-                                                        <div className="invalid-feedback">{errors.RepairStartedDate}</div>
+                                                        <div style={{color:'#DC3545'}}>{errors.RepairStartedDate}</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -516,18 +540,21 @@ const AddCustomer = () => {
                                                     <input
                                                         type="date"
                                                         id="DeliveredDate"
-                                                        className={`form-control ${touched.DeliveredDate && errors.DeliveredDate ? 'is-invalid' : ''}`}
+                                                        className={`form-control ${touched.DeliveredDate && errors.DeliveredDate ? '' : ''}`}
                                                         name="DeliveredDate"
                                                         value={values.DeliveredDate}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        min={new Date().toISOString().split('T')[0]} // This sets the min to today's date
+
                                                         required
                                                     />
                                                     <label htmlFor="DeliveredDate" className="floating-label">
                                                         Delivered Date <span className="text-danger">*</span>
                                                     </label>
                                                     {touched.DeliveredDate && errors.DeliveredDate && (
-                                                        <div className="invalid-feedback">{errors.DeliveredDate}</div>
+                                                        <div style={{color:'#DC3545'}}>{errors.DeliveredDate}</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -538,18 +565,21 @@ const AddCustomer = () => {
                                                     <input
                                                         type="date"
                                                         id="VehicleYear"
-                                                        className={`form-control ${touched.VehicleYear && errors.VehicleYear ? 'is-invalid' : ''}`}
+                                                        className={`form-control ${touched.VehicleYear && errors.VehicleYear ? '' : ''}`}
                                                         name="VehicleYear"
                                                         value={values.VehicleYear}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        min={new Date().toISOString().split('T')[0]} // This sets the min to today's date
+
                                                         required
                                                     />
                                                     <label htmlFor="VehicleYear" className="floating-label">
                                                         Vehicle Year <span className="text-danger">*</span>
                                                     </label>
                                                     {touched.VehicleYear && errors.VehicleYear && (
-                                                        <div className="invalid-feedback">{errors.VehicleYear}</div>
+                                                        <div style={{color:'#DC3545'}}>{errors.VehicleYear}</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -558,20 +588,22 @@ const AddCustomer = () => {
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
                                                     <input
-                                                        type="text"
+                                                        type="date"
                                                         id="VehicleMake"
-                                                        className={`form-control ${touched.VehicleMake && errors.VehicleMake ? 'is-invalid' : ''}`}
+                                                        className={`form-control ${touched.VehicleMake && errors.VehicleMake ? '' : ''}`}
                                                         name="VehicleMake"
                                                         value={values.VehicleMake}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+
                                                         required
                                                     />
                                                     <label htmlFor="VehicleMake" className="floating-label">
                                                         Vehicle Make <span className="text-danger">*</span>
                                                     </label>
                                                     {touched.VehicleMake && errors.VehicleMake && (
-                                                        <div className="invalid-feedback">{errors.VehicleMake}</div>
+                                                        <div style={{color:'#DC3545'}}>{errors.VehicleMake}</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -589,6 +621,8 @@ const AddCustomer = () => {
                                                         value={values.VehicleModel}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+
                                                         required
                                                     />
                                                     <label htmlFor="VehicleModel" className="floating-label">
@@ -603,7 +637,7 @@ const AddCustomer = () => {
                                             {/* Business Key PSG */}
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
-                                                    
+
                                                     <select
                                                         id="BusinessKeyPSG"
                                                         className={`form-control   ${touched.BusinessKeyPSG && errors.BusinessKeyPSG ? 'is-invalid' : ''}`}
@@ -611,12 +645,16 @@ const AddCustomer = () => {
                                                         value={values.BusinessKeyPSG}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+
                                                         required
                                                         aria-label="Select a business"
 
-                                                        
+
                                                     >
-                                                       
+                                                             <option value="" disabled selected>Select</option>  {/* Default option */}
+
+
                                                         {shopList?.data?.map((shop, index) => (
                                                             <option key={shop.psg_id} value={shop.psg_id}>
                                                                 {shop?.shop_name}
@@ -643,6 +681,8 @@ const AddCustomer = () => {
                                                         value={values.BUName}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+
                                                         required
                                                     />
                                                     <label htmlFor="BUName" className="floating-label">
@@ -668,6 +708,8 @@ const AddCustomer = () => {
                                                         value={values.input_source}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+
+
                                                     />
                                                     <label htmlFor="input_source" className="floating-label">Input Source</label>
                                                 </div>
@@ -694,7 +736,7 @@ const AddCustomer = () => {
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
                                                     <input
-                                                        type="text"
+                                                        type="date"
                                                         id="input_date"
                                                         className="form-control"
                                                         placeholder=" "
@@ -702,6 +744,8 @@ const AddCustomer = () => {
                                                         value={values.input_date}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        min={new Date().toISOString().split('T')[0]} // This sets the min to today's date
+
                                                     />
                                                     <label htmlFor="input_date" className="floating-label">Input Date</label>
                                                 </div>
@@ -780,14 +824,18 @@ const AddCustomer = () => {
                                                     <input
                                                         type="text"
                                                         id="OwnerHomePhone"
-                                                        className="form-control"
+                                                        className={`form-control ${touched.OwnerHomePhone && errors.OwnerHomePhone ? 'is-invalid' : ''}`}
                                                         placeholder=" "
                                                         name="OwnerHomePhone"
                                                         value={values.OwnerHomePhone}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        required
                                                     />
-                                                    <label htmlFor="OwnerHomePhone" className="floating-label">Owner Home Phone</label>
+                                                    <label htmlFor="OwnerHomePhone" className="floating-label">Owner Home Phone<span className="text-danger">*</span></label>
+                                                    {touched.OwnerHomePhone && errors.OwnerHomePhone && (
+                                                        <div className="invalid-feedback">{errors.OwnerHomePhone}</div>
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -1165,28 +1213,7 @@ const AddCustomer = () => {
                                             </div>
                                         </div>
 
-                                        <div className="row">
-                                            <div className="col-lg-12">
-                                                <div className={`form-label-group in-border ${touched.signatureText && errors.signatureText ? 'is-invalid' : ''}`}>
-                                                    <textarea
-                                                        id="signatureText"
-                                                        className="form-control text-area-height"
-                                                        placeholder=" "
-                                                        name="signatureText"
-                                                        value={values.signatureText}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        required
-                                                    />
-                                                    <label htmlFor="signatureText" className="floating-label">
-                                                        Signature Text <span>*</span>
-                                                    </label>
-                                                    {touched.signatureText && errors.signatureText && (
-                                                        <div className="invalid-feedback">{errors.signatureText}</div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
+                                      
 
                                     </div>
 
@@ -1211,7 +1238,7 @@ const AddCustomer = () => {
                                                     <div className="border-bottom"></div>
                                                     <div className="import-box-rounded">
                                                         <div className="import-dropzone-desc">
-                                                            <button type="button" className="btn sub-btn"> {csvFile ? csvFile.name :'Select CSV file'}</button>
+                                                            <button type="button" className="btn sub-btn"> {csvFile ? csvFile.name : 'Select CSV file'}</button>
                                                             <p>or Drag and Drop Here</p>
                                                             <input type="file" name="csv_file" onChange={handleCsvFileUpload} />
                                                             {csvError && <span style={{ color: 'red' }}>{csvError}</span>}

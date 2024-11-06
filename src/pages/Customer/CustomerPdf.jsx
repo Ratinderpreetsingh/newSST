@@ -4,47 +4,59 @@ export const generatePDF = (productData) => {
     const doc = new jsPDF();
 
     let y = 10;  // Define the starting position for text
+    const pageHeight = doc.internal.pageSize.height; // Get page height
+
+    // Helper function to add text and check for page overflow
+    const addText = (text) => {
+        // Check if we need to add a new page
+        if (y + 10 > pageHeight) {
+            doc.addPage();  // Add a new page
+            y = 10;  // Reset y to start near the top of the new page
+        }
+        doc.text(text, 10, y);  // Add text at the current position
+        y += 10;  // Increment y position for the next text line
+    };
 
     // Add Customer Information
-    doc.text(`Customer Name: ${productData?.OwnerFName} ${productData?.OwnerLName}`, 10, y += 10);
-    doc.text(`Company Name: ${productData?.OwnerCompanyName}`, 10, y += 10);
-    doc.text(`Address: ${productData?.OwnerAddress1}, ${productData?.OwnerAddress2 ? productData?.OwnerAddress2 + ', ' : ''}${productData?.OwnerCity}, ${productData?.OwnerStateProvince} ${productData?.OwnerPostalZip}`, 10, y += 10);
-    doc.text(`Email: ${productData?.OwnerEmail}`, 10, y += 10);
-    doc.text(`Cell Phone: ${productData?.OwnerCellPhone}`, 10, y += 10);
-    doc.text(`Home Phone: ${productData?.OwnerHomePhone}`, 10, y += 10);
-    doc.text(`Work Phone: ${productData?.OwnerWorkPhone}`, 10, y += 10);
-    doc.text(`Night Phone: ${productData?.OwnerNightPhone}`, 10, y += 10);
-    doc.text(`Day Phone: ${productData?.OwnerDayPhone}`, 10, y += 10);
+    addText(`Customer Name: ${productData?.OwnerFName} ${productData?.OwnerLName}`);
+    addText(`Company Name: ${productData?.OwnerCompanyName}`);
+    addText(`Address: ${productData?.OwnerAddress1}, ${productData?.OwnerAddress2 ? productData?.OwnerAddress2 + ', ' : ''}${productData?.OwnerCity}, ${productData?.OwnerStateProvince} ${productData?.OwnerPostalZip}`);
+    addText(`Email: ${productData?.OwnerEmail}`);
+    addText(`Cell Phone: ${productData?.OwnerCellPhone}`);
+    addText(`Home Phone: ${productData?.OwnerHomePhone}`);
+    addText(`Work Phone: ${productData?.OwnerWorkPhone}`);
+    addText(`Night Phone: ${productData?.OwnerNightPhone}`);
+    addText(`Day Phone: ${productData?.OwnerDayPhone}`);
 
-    // Vehicle Information
-    doc.text(`Vehicle Year: ${productData?.VehicleYear}`, 10, y += 10);
-    doc.text(`Vehicle Make: ${productData?.VehicleMake}`, 10, y += 10);
-    doc.text(`Vehicle Model: ${productData?.VehicleModel}`, 10, y += 10);
-    doc.text(`Vehicle Arrived Date: ${productData?.VehicleArrivedDate}`, 10, y += 10);
+    // Add Vehicle Information
+    addText(`Vehicle Year: ${productData?.VehicleYear}`);
+    addText(`Vehicle Make: ${productData?.VehicleMake}`);
+    addText(`Vehicle Model: ${productData?.VehicleModel}`);
+    addText(`Vehicle Arrived Date: ${productData?.VehicleArrivedDate}`);
 
-    // Claim Information
-    doc.text(`Claim Type: ${productData?.ClaimType}`, 10, y += 10);
-    doc.text(`Insurance Company: ${productData?.InsuranceCompany}`, 10, y += 10);
-    doc.text(`Estimator Name: ${productData?.EstimatorName}`, 10, y += 10);
-    doc.text(`Insurance Agent: ${productData?.InsuranceAgentName}`, 10, y += 10);
-    doc.text(`Gross Amount: $${productData?.GrossAmount}`, 10, y += 10);
-    doc.text(`Total Loss: $${productData?.TotalLoss}`, 10, y += 10);
+    // Add Claim Information
+    addText(`Claim Type: ${productData?.ClaimType}`);
+    addText(`Insurance Company: ${productData?.InsuranceCompany}`);
+    addText(`Estimator Name: ${productData?.EstimatorName}`);
+    addText(`Insurance Agent: ${productData?.InsuranceAgentName}`);
+    addText(`Gross Amount: $${productData?.GrossAmount}`);
+    addText(`Total Loss: $${productData?.TotalLoss}`);
 
-    // Repair Information
-    doc.text(`Repair Started Date: ${productData?.RepairStartedDate}`, 10, y += 10);
-    doc.text(`Delivered Date: ${productData?.DeliveredDate}`, 10, y += 10);
-    doc.text(`Total Labor Hours: ${productData?.TotalLaborHrs}`, 10, y += 10);
-    doc.text(`RONumber: ${productData?.RONumber}`, 10, y += 10);
+    // Add Repair Information
+    addText(`Repair Started Date: ${productData?.RepairStartedDate}`);
+    addText(`Delivered Date: ${productData?.DeliveredDate}`);
+    addText(`Total Labor Hours: ${productData?.TotalLaborHrs}`);
+    addText(`RONumber: ${productData?.RONumber}`);
 
-    // Shop Information
-    doc.text(`Shop Name: ${productData?.shop_name?.shop_name}`, 10, y += 10);
-    doc.text(`Shop Address: ${productData?.shop_name?.address1}, ${productData?.shop_name?.m_shop_city}, ${productData?.shop_name?.m_shop_state} ${productData?.shop_name?.m_shop_zip}`, 10, y += 10);
-    doc.text(`Shop Contact: ${productData?.shop_name?.phone_number}`, 10, y += 10);
-    doc.text(`Shop Email: ${productData?.shop_name?.email}`, 10, y += 10);
+    // Add Shop Information
+    addText(`Shop Name: ${productData?.shop_name?.shop_name}`);
+    addText(`Shop Address: ${productData?.shop_name?.address1}, ${productData?.shop_name?.m_shop_city}, ${productData?.shop_name?.m_shop_state} ${productData?.shop_name?.m_shop_zip}`);
+    addText(`Shop Contact: ${productData?.shop_name?.phone_number}`);
+    addText(`Shop Email: ${productData?.shop_name?.email}`);
 
-    // Adding a footer or signature text
-    doc.text("Report generated by: Alioto's Garage", 10, y += 10);
-    doc.text("Signature: ________________________", 10, y += 10);
+    // Add Footer or Signature
+    addText("Report generated by: Alioto's Garage");
+    addText("Signature: ________________________");
 
     // Output the PDF to a new tab
     const pdfOutput = doc.output('bloburl');

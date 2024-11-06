@@ -5,8 +5,9 @@ import { customerValidation } from "../../Validation/customer";
 import { useGetCustomerByIdQuery, useUpdateCustomerMutation } from "../../redux/QueryAPi/customer";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ModifyDate } from "../../utils/ModifyDate";
+import {  ChangeDate, ModifyDate } from "../../utils/ModifyDate";
 import { useGetAllShopsNameQuery } from "../../redux/QueryAPi/shopApi";
+import moment from 'moment';
 
 const View_Edit = () => {
     const [updateCustomer, { isSuccess }] = useUpdateCustomerMutation()
@@ -15,6 +16,9 @@ const View_Edit = () => {
     const { data } = useGetCustomerByIdQuery(id)
     const [isEdit, setEdit] = useState(true)
     const navigate = useNavigate()
+ 
+  
+    
     const initialValues = {
         customer_id: id,
         status: data?.data?.status || '',
@@ -30,17 +34,17 @@ const View_Edit = () => {
         OwnerPostalZip: data?.data?.OwnerPostalZip || '',
         OwnerEmail: data?.data?.OwnerEmail || '',
         OwnerCellPhone: data?.data?.OwnerCellPhone || '',
-        VehicleArrivedDate: data?.data?.VehicleArrivedDate || '',
-        RepairStartedDate: data?.data?.RepairStartedDate || '',
-        DeliveredDate: data?.data?.DeliveredDate || '',
-        VehicleYear: data?.data?.VehicleYear || '',
-        VehicleMake: data?.data?.VehicleMake || '',
-        VehicleModel: data?.data?.VehicleModel || '',
+        VehicleArrivedDate:ChangeDate(data?.data?.VehicleArrivedDate) || '',
+        RepairStartedDate: ChangeDate(data?.data?.RepairStartedDate) || '',
+        DeliveredDate: ChangeDate(data?.data?.DeliveredDate)|| '',
+        VehicleYear: ChangeDate(data?.data?.VehicleYear )|| '',
+        VehicleMake: ChangeDate(data?.data?.VehicleMake )|| '',
+        VehicleModel:ChangeDate( data?.data?.VehicleModel )|| '',
         BusinessKeyPSG: data?.data?.BusinessKeyPSG || '',
         BUName: data?.data?.BUName || '',
         input_source: data?.data?.input_source || '',
         merge_key: data?.data?.merge_key || '',
-        input_date: data?.data?.input_date || '',
+        input_date:ChangeDate(data?.data?.input_date )  || '',
         purl_id: data?.data?.purl_id || '',
         name_prefix: data?.data?.name_prefix || '',
         OwnerWorkPhone: data?.data?.OwnerWorkPhone || '',
@@ -66,7 +70,7 @@ const View_Edit = () => {
         scheduled_dm: data?.data?.scheduled_dm || '',
         UID: data?.data?.UID || '2' // Default value if not provided
     };
-    const { data: shopList, error, } = useGetAllShopsNameQuery();
+    const { data: shopList, error, } = useGetAllShopsNameQuery(name='');
     const { values, errors, handleChange, handleSubmit, handleBlur, touched, setFieldValue } = useFormik({
         initialValues,
         validationSchema: customerValidation,
@@ -147,10 +151,12 @@ const View_Edit = () => {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         aria-describedby="OwnerFName" // For accessibility
+                                                        
                                                     />
                                                     <label htmlFor="OwnerFName" className="floating-label">
-                                                        Shop Name <span className="text-danger">*</span>
+                                                    OwnerFName <span className="text-danger">*</span>
                                                     </label>
                                                     {/* Validation Error */}
                                                     {touched.OwnerFName && errors.OwnerFName ? (
@@ -173,6 +179,7 @@ const View_Edit = () => {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                     />
                                                     <label htmlFor="OwnerLName" className="floating-label">
                                                         Owner Last Name <span>*</span>
@@ -197,12 +204,14 @@ const View_Edit = () => {
                                                         value={values.status}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     >
                                                         <option disabled selected>Select</option>
                                                         <option value={'Clean'}>Clean</option>
                                                         <option value={'Error'}>Error</option>
-                                                        <option value={'UnChecked'}>UnChecked</option>
+                                                        <option value={'Unchecked'}>UnChecked</option>
                                                     </select>
                                                     <label htmlFor="status" className="floating-label">
                                                         Status <span>*</span>
@@ -227,6 +236,9 @@ const View_Edit = () => {
                                                         className={`form-control ${touched.OwnerCompanyName && errors.OwnerCompanyName ? 'is-invalid' : ''}`}
                                                         name="OwnerCompanyName"
                                                         value={values.OwnerCompanyName}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
+
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         required
@@ -255,6 +267,8 @@ const View_Edit = () => {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         required
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                     />
                                                     <label htmlFor="RONumber" className="floating-label">
                                                         RO Number <span>*</span>
@@ -280,6 +294,8 @@ const View_Edit = () => {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         required
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                     />
                                                     <label htmlFor="CSRName" className="floating-label">
                                                         CSR Name <span>*</span>
@@ -306,6 +322,8 @@ const View_Edit = () => {
                                                         value={values.OwnerAddress1}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="OwnerAddress1" className="floating-label">
@@ -331,6 +349,8 @@ const View_Edit = () => {
                                                         value={values.OwnerAddress2}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                     />
                                                     <label htmlFor="OwnerAddress2" className="floating-label">
                                                         Address 2
@@ -349,6 +369,8 @@ const View_Edit = () => {
                                                         value={values.OwnerCity}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="OwnerCity" className="floating-label">
@@ -377,6 +399,7 @@ const View_Edit = () => {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="OwnerStateProvince" className="floating-label">
@@ -400,6 +423,7 @@ const View_Edit = () => {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="OwnerPostalZip" className="floating-label">
@@ -423,6 +447,7 @@ const View_Edit = () => {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="OwnerEmail" className="floating-label">
@@ -448,6 +473,7 @@ const View_Edit = () => {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="OwnerCellPhone" className="floating-label">
@@ -470,6 +496,8 @@ const View_Edit = () => {
                                                         value={values.VehicleArrivedDate}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="VehicleArrivedDate" className="floating-label">
@@ -492,6 +520,8 @@ const View_Edit = () => {
                                                         value={values.RepairStartedDate}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="RepairStartedDate" className="floating-label">
@@ -516,6 +546,8 @@ const View_Edit = () => {
                                                         value={values.DeliveredDate}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="DeliveredDate" className="floating-label">
@@ -538,6 +570,8 @@ const View_Edit = () => {
                                                         value={values.VehicleYear}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="VehicleYear" className="floating-label">
@@ -560,6 +594,8 @@ const View_Edit = () => {
                                                         value={values.VehicleMake}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="VehicleMake" className="floating-label">
@@ -584,6 +620,8 @@ const View_Edit = () => {
                                                         value={values.VehicleModel}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="VehicleModel" className="floating-label">
@@ -605,6 +643,8 @@ const View_Edit = () => {
                                                         value={values.BusinessKeyPSG}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                         aria-label="Select a business"
                                                     >
@@ -635,6 +675,8 @@ const View_Edit = () => {
                                                         value={values.BUName}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        placeholder=" "
+                                                        disabled={isEdit}
                                                         required
                                                     />
                                                     <label htmlFor="BUName" className="floating-label">
@@ -656,6 +698,7 @@ const View_Edit = () => {
                                                         id="input_source"
                                                         className="form-control"
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="input_source"
                                                         value={values.input_source}
                                                         onChange={handleChange}
@@ -673,6 +716,7 @@ const View_Edit = () => {
                                                         id="merge_key"
                                                         className="form-control"
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="merge_key"
                                                         value={values.merge_key}
                                                         onChange={handleChange}
@@ -684,19 +728,24 @@ const View_Edit = () => {
 
                                             {/* Input Date */}
                                             <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
+                                            <div className="form-label-group in-border">
                                                     <input
-                                                        type="text"
+                                                        type="date"
                                                         id="input_date"
                                                         className="form-control"
                                                         placeholder=" "
+                                                        disabled={isEdit}
+
                                                         name="input_date"
                                                         value={values.input_date}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
+                                                        min={new Date().toISOString().split('T')[0]} // This sets the min to today's date
+
                                                     />
                                                     <label htmlFor="input_date" className="floating-label">Input Date</label>
                                                 </div>
+                                              
                                             </div>
                                         </div>
 
@@ -709,6 +758,7 @@ const View_Edit = () => {
                                                         id="purl_id"
                                                         className={`form-control ${touched.purl_id && errors.purl_id ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="purl_id"
                                                         value={values.purl_id}
                                                         onChange={handleChange}
@@ -732,6 +782,7 @@ const View_Edit = () => {
                                                         id="name_prefix"
                                                         className="form-control"
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="name_prefix"
                                                         value={values.name_prefix}
                                                         onChange={handleChange}
@@ -749,6 +800,7 @@ const View_Edit = () => {
                                                         id="OwnerWorkPhone"
                                                         className={`form-control ${touched.OwnerWorkPhone && errors.OwnerWorkPhone ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="OwnerWorkPhone"
                                                         value={values.OwnerWorkPhone}
                                                         onChange={handleChange}
@@ -774,12 +826,16 @@ const View_Edit = () => {
                                                         id="OwnerHomePhone"
                                                         className="form-control"
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="OwnerHomePhone"
                                                         value={values.OwnerHomePhone}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                     />
-                                                    <label htmlFor="OwnerHomePhone" className="floating-label">Owner Home Phone</label>
+                                                    <label htmlFor="OwnerHomePhone" className="floating-label">Owner Home Phone<span className="text-danger">*</span></label>
+                                                    {touched.OwnerHomePhone && errors.OwnerHomePhone && (
+                                                        <div className="invalid-feedback">{errors.OwnerHomePhone}</div>
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -791,6 +847,7 @@ const View_Edit = () => {
                                                         id="OwnerCountryCode"
                                                         className={`form-control ${touched.OwnerCountryCode && errors.OwnerCountryCode ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="OwnerCountryCode"
                                                         value={values.OwnerCountryCode}
                                                         onChange={handleChange}
@@ -814,6 +871,7 @@ const View_Edit = () => {
                                                         id="OwnerNightPhone"
                                                         className={`form-control ${touched.OwnerNightPhone && errors.OwnerNightPhone ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="OwnerNightPhone"
                                                         value={values.OwnerNightPhone}
                                                         onChange={handleChange}
@@ -839,6 +897,7 @@ const View_Edit = () => {
                                                         id="OwnerDayPhone"
                                                         className={`form-control ${touched.OwnerDayPhone && errors.OwnerDayPhone ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="OwnerDayPhone"
                                                         value={values.OwnerDayPhone}
                                                         onChange={handleChange}
@@ -860,6 +919,7 @@ const View_Edit = () => {
                                                         id="OwnerOtherPhone"
                                                         className={`form-control ${touched.OwnerOtherPhone && errors.OwnerOtherPhone ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="OwnerOtherPhone"
                                                         value={values.OwnerOtherPhone}
                                                         onChange={handleChange}
@@ -881,6 +941,7 @@ const View_Edit = () => {
                                                         id="ReferralSourceName"
                                                         className={`form-control ${touched.ReferralSourceName && errors.ReferralSourceName ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="ReferralSourceName"
                                                         value={values.ReferralSourceName}
                                                         onChange={handleChange}
@@ -905,6 +966,7 @@ const View_Edit = () => {
                                                         id="InsuranceCompany"
                                                         className={`form-control ${touched.InsuranceCompany && errors.InsuranceCompany ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="InsuranceCompany"
                                                         value={values.InsuranceCompany}
                                                         onChange={handleChange}
@@ -926,6 +988,7 @@ const View_Edit = () => {
                                                         id="ClaimType"
                                                         className={`form-control ${touched.ClaimType && errors.ClaimType ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="ClaimType"
                                                         value={values.ClaimType}
                                                         onChange={handleChange}
@@ -947,6 +1010,7 @@ const View_Edit = () => {
                                                         id="TotalLaborHrs"
                                                         className={`form-control ${touched.TotalLaborHrs && errors.TotalLaborHrs ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="TotalLaborHrs"
                                                         value={values.TotalLaborHrs}
                                                         onChange={handleChange}
@@ -971,6 +1035,7 @@ const View_Edit = () => {
                                                         id="GrossAmount"
                                                         className={`form-control ${touched.GrossAmount && errors.GrossAmount ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="GrossAmount"
                                                         value={values.GrossAmount}
                                                         onChange={handleChange}
@@ -992,6 +1057,7 @@ const View_Edit = () => {
                                                         id="TotalLoss"
                                                         className={`form-control ${touched.TotalLoss && errors.TotalLoss ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="TotalLoss"
                                                         value={values.TotalLoss}
                                                         onChange={handleChange}
@@ -1013,6 +1079,7 @@ const View_Edit = () => {
                                                         id="InsuranceAgentName"
                                                         className={`form-control ${touched.InsuranceAgentName && errors.InsuranceAgentName ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="InsuranceAgentName"
                                                         value={values.InsuranceAgentName}
                                                         onChange={handleChange}
@@ -1037,6 +1104,7 @@ const View_Edit = () => {
                                                         id="EstimatorName"
                                                         className={`form-control ${touched.EstimatorName && errors.EstimatorName ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="EstimatorName"
                                                         value={values.EstimatorName}
                                                         onChange={handleChange}
@@ -1058,6 +1126,7 @@ const View_Edit = () => {
                                                         id="BodyTechFullName"
                                                         className={`form-control ${touched.BodyTechFullName && errors.BodyTechFullName ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="BodyTechFullName"
                                                         value={values.BodyTechFullName}
                                                         onChange={handleChange}
@@ -1078,6 +1147,7 @@ const View_Edit = () => {
                                                         id="PaintTechFullName"
                                                         className={`form-control ${touched.PaintTechFullName && errors.PaintTechFullName ? 'is-invalid' : ''}`}
                                                         placeholder=" "
+                                                        disabled={isEdit}
                                                         name="PaintTechFullName"
                                                         value={values.PaintTechFullName}
                                                         onChange={handleChange}
@@ -1103,6 +1173,8 @@ const View_Edit = () => {
                                                             const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
                                                             setFieldValue("update_definitions_on_save", value); // Use setFieldValue
                                                         }}
+                                                        disabled={isEdit}
+
                                                     />
                                                     <label htmlFor="update_definitions_on_save" className="floating-label">Update Definitions on Save</label>
                                                 </div>
@@ -1115,6 +1187,8 @@ const View_Edit = () => {
                                                             const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
                                                             setFieldValue("sms_log", value); // Use setFieldValue
                                                         }}
+                                                        disabled={isEdit}
+
                                                     />
                                                     <label htmlFor="sms_log" className="floating-label">SMS Log</label>
                                                 </div>
@@ -1126,7 +1200,9 @@ const View_Edit = () => {
                                                         onChange={(e) => {
                                                             const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
                                                             setFieldValue("invalidron", value); // Use setFieldValue
-                                                        }} />
+                                                        }}
+                                                        disabled={isEdit}
+                                                        />
                                                     <label htmlFor="invalidron" className="floating-label">Invalid RO Number</label>
                                                 </div>
                                             </div>
@@ -1140,7 +1216,9 @@ const View_Edit = () => {
                                                         onChange={(e) => {
                                                             const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
                                                             setFieldValue("sst_definitions", value); // Use setFieldValue
-                                                        }} />
+                                                        }}
+                                                        disabled={isEdit}
+                                                        />
                                                     <label htmlFor="sst_definitions" className="floating-label">SST Definitions</label>
                                                 </div>
                                             </div>
@@ -1151,34 +1229,15 @@ const View_Edit = () => {
                                                         onChange={(e) => {
                                                             const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
                                                             setFieldValue("scheduled_dm", value); // Use setFieldValue
-                                                        }} />
+                                                        }} 
+                                                        disabled={isEdit}
+/>
                                                     <label htmlFor="scheduled_dm" className="floating-label">Scheduled DM</label>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="row">
-                                            <div className="col-lg-12">
-                                                <div className={`form-label-group in-border ${touched.signatureText && errors.signatureText ? 'is-invalid' : ''}`}>
-                                                    <textarea
-                                                        id="signatureText"
-                                                        className="form-control text-area-height"
-                                                        placeholder=" "
-                                                        name="signatureText"
-                                                        value={values.signatureText}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        required
-                                                    />
-                                                    <label htmlFor="signatureText" className="floating-label">
-                                                        Signature Text <span>*</span>
-                                                    </label>
-                                                    {touched.signatureText && errors.signatureText && (
-                                                        <div className="invalid-feedback">{errors.signatureText}</div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
+                                       
 
                                     </div>
 
@@ -1187,7 +1246,7 @@ const View_Edit = () => {
                                     <div className="container mt-3">
                                         <div className="row">
                                             <div className="text-center">
-                                                <button type="submit" className="btn sub-btn" onClick={handleSubmit}>SAVE</button>
+                                                <button type="submit" className="btn sub-btn" disabled={isEdit} onClick={handleSubmit}>SAVE</button>
                                             </div>
                                         </div>
                                     </div>

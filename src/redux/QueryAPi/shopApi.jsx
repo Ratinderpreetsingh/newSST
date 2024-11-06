@@ -19,10 +19,9 @@ export const shopApi = baseApi.injectEndpoints({
         }),
         // dropdownlist
         getAllShopsName: build.query({
-            query: () => {
+            query: (name) => {
                 // debugger
-                return `${SHOPS.DROP_DOWN_SHOPS}
-                                    `;
+                return `${SHOPS.DROP_DOWN_SHOPS}?name=${name}`;
             },
             transformResponse: (response) => {
                 return response;

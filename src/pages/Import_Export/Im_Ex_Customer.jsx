@@ -29,7 +29,7 @@ const Im_Ex_Customer = () => {
         try {
             // Start loading before the request
             setExportLoading(true);
-
+            setData(null);
             // Make the export API request
             const response = await axios.get('https://sst.psghub.me/sstapi/api/v1/customer-export', {
                 headers: {
@@ -41,6 +41,7 @@ const Im_Ex_Customer = () => {
             if (response?.data) {
                 console.log('Export successful:', response);
                 setData(response?.data); // Store the exported data
+                
             } else {
                 console.warn('No data received in export response');
                 setData([]); // Reset or clear data if no valid response
@@ -76,20 +77,27 @@ const Im_Ex_Customer = () => {
         if (data?.download_link) {
             // Create a temporary anchor element to trigger download
             const link = document.createElement('a');
-            link.href = data.download_link;  // Set the download link
-
+            
+            // Add a timestamp to the download URL to ensure a unique URL every time
+            const timestamp = new Date().getTime(); 
+            const updatedLink = `${data.download_link}?t=${timestamp}`;
+    
+            link.href = updatedLink;  // Set the download link with timestamp
+    
             // Optional: Set a download attribute to specify the file name
-            const fileName = data?.download_link.split('/').pop(); // Extract the file name from the URL (you can modify this based on your response)
+            const fileName = data?.download_link.split('/').pop(); // Extract the file name from the URL
             link.download = fileName || 'download';  // Default to 'download' if file name is not available
-
+    
             // Programmatically trigger a click event on the link to start the download
             link.click();
         }
     }, [data?.download_link]);
+    
 
 
     useEffect(() => {
         if (csvSuceess) {
+            toast.success("Import Suceesfully")
             navigate('/customer');
         }
     }, [csvSuceess]);
