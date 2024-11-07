@@ -20,7 +20,7 @@ export const shopValidation = Yup.object({
   // first_name: null,
   // last_name: null,
   m_shop_signature_text: Yup.string().required("Shop Signature is required"),
-  // email_from: null,
+  email_from: Yup.string().required("Email from  is required"),
   // embed_type: null || "Gravity Form",
   // form_id: null,
   // survey_id: null,

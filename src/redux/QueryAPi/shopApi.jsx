@@ -53,11 +53,11 @@ export const shopApi = baseApi.injectEndpoints({
                 try {
                   const {data:createdShop}=await queryFulfilled
                   console.log(createdShop,"CREATE")
-                  debugger
+                //   debugger
                   dispatch(
                     
                     shopApi.util.updateQueryData('getAllShops',undefined,(draft)=>{
-                      debugger
+                    //   debugger
                       console.log(JSON.stringify(draft),"DREAFT")
                       if (Array.isArray(draft)) {
                         draft.push(createdShop.data);
@@ -101,7 +101,9 @@ export const shopApi = baseApi.injectEndpoints({
                     body: shopUpdate,
                 }
 
-            }
+            },
+            invalidatesTags: ['Shop'],
+
         })
 
 

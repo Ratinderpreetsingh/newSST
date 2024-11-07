@@ -58,11 +58,11 @@ const AddCustomer = () => {
         EstimatorName: '',
         BodyTechFullName: '',
         PaintTechFullName: '',
-        update_definitions_on_save: 0,
-        sms_log: 0,
-        invalidron: 0,
-        sst_definitions: 0,
-        scheduled_dm: 0,
+        update_definitions_on_save: '0',
+        sms_log: '0',
+        invalidron: '0',
+        sst_definitions: '0',
+        scheduled_dm: '0',
         UID: Math.floor(Math.random() * 100) || '-',
     };
     const { data: shopList, error, } = useGetAllShopsNameQuery(name='');
@@ -564,7 +564,7 @@ const AddCustomer = () => {
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
                                                     <input
-                                                        type="date"
+                                                        type="text"
                                                         id="VehicleYear"
                                                         className={`form-control ${touched.VehicleYear && errors.VehicleYear ? '' : ''}`}
                                                         name="VehicleYear"
@@ -589,7 +589,7 @@ const AddCustomer = () => {
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
                                                     <input
-                                                        type="date"
+                                                        type="text"
                                                         id="VehicleMake"
                                                         className={`form-control ${touched.VehicleMake && errors.VehicleMake ? '' : ''}`}
                                                         name="VehicleMake"
@@ -1151,65 +1151,65 @@ const AddCustomer = () => {
                                         </div>
 
 
-                                        <div className="row">
+                                        <div className="row pb-2">
                                             <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
+                                                <div className=" in-border">
                                                     <input type="checkbox" id="update_definitions_on_save" name="update_definitions_on_save"
-                                                        checked={values.update_definitions_on_save === 1} // Check if value is 1
+                                                        checked={values.update_definitions_on_save === '1'} // Check if value is 1
                                                         onChange={(e) => {
-                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            const value = e.target.checked ? '1' : '0'; // Convert to 1 or 0
                                                             setFieldValue("update_definitions_on_save", value); // Use setFieldValue
                                                         }}
                                                     />
-                                                    <label for="update_definitions_on_save" className="floating-label">Update Definitions on Save</label>
+                                                    <label for="update_definitions_on_save" className="floating-label" style={{ paddingLeft: '5px'}}>Update Definitions on Save</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
+                                                <div className=" in-border">
                                                     <input type="checkbox" id="sms_log" name="sms_log"
-                                                        checked={values.sms_log === 1} // Check if value is 1
+                                                        checked={values.sms_log === '1'} // Check if value is 1
                                                         onChange={(e) => {
-                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            const value = e.target.checked ? '1' : '0'; // Convert to 1 or 0
                                                             setFieldValue("sms_log", value); // Use setFieldValue
                                                         }}
                                                     />
-                                                    <label htmlFor="sms_log" className="floating-label">SMS Log</label>
+                                                    <label htmlFor="sms_log" className="floating-label" style={{ paddingLeft: '5px'}}>SMS Log</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
+                                                <div className=" in-border">
                                                     <input type="checkbox" id="invalidron" name="invalidron"
-                                                        checked={values.invalidron === 1} // Check if value is 1
+                                                        checked={values.invalidron === '1'} // Check if value is 1
                                                         onChange={(e) => {
-                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            const value = e.target.checked ? '1' : '0'; // Convert to 1 or 0
                                                             setFieldValue("invalidron", value); // Use setFieldValue
                                                         }} />
-                                                    <label htmlFor="invalidron" className="floating-label">Invalid RO Number</label>
+                                                    <label htmlFor="invalidron" className="floating-label" style={{ paddingLeft: '5px'}}>Invalid RO Number</label>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="row">
                                             <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
+                                                <div className=" in-border">
                                                     <input type="checkbox" id="sst_definitions" name="sst_definitions"
-                                                        checked={values.sst_definitions === 1} // Check if value is 1
+                                                        checked={values.sst_definitions === '1'} // Check if value is 1
                                                         onChange={(e) => {
-                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            const value = e.target.checked ? '1' : '0'; // Convert to 1 or 0
                                                             setFieldValue("sst_definitions", value); // Use setFieldValue
                                                         }} />
-                                                    <label htmlFor="sst_definitions" className="floating-label">SST Definitions</label>
+                                                    <label htmlFor="sst_definitions" className="floating-label" style={{ paddingLeft: '5px'}}>SST Definitions</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
+                                                <div className=" in-border">
                                                     <input type="checkbox" id="scheduled_dm" name="scheduled_dm"
-                                                        checked={values.scheduled_dm === 1} // Check if value is 1
+                                                        checked={values.scheduled_dm === '1'} // Check if value is 1
                                                         onChange={(e) => {
-                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            const value = e.target.checked ? '1' : '0'; // Convert to 1 or 0
                                                             setFieldValue("scheduled_dm", value); // Use setFieldValue
                                                         }} />
-                                                    <label htmlFor="scheduled_dm" className="floating-label">Scheduled DM</label>
+                                                    <label htmlFor="scheduled_dm" className="floating-label" style={{ paddingLeft: '5px'}}>Scheduled DM</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -1253,7 +1253,7 @@ const AddCustomer = () => {
                                     <div className="container mt-3">
                                         <div className="row">
                                             <div className="text-center">
-                                                <button type="submit" className="btn sub-btn" onClick={handleUploadCsvFile}>{csvLoading ? 'Uploading...' : 'Save'}</button>
+                                                <button type="submit" className="btn sub-btn" disabled={csvFile?.name ? false :true} onClick={handleUploadCsvFile}>{csvLoading ? 'Uploading...' : 'Save'}</button>
                                             </div>
                                         </div>
                                     </div>

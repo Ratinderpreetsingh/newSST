@@ -2,10 +2,11 @@ import { useFormik } from "formik";
 import { useUpdateShopMutation, useGetShopByIdQuery } from "../../redux/QueryAPi/shopApi";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { shopValidation } from "../../Validation/shop";
 
 const Edit_shop = () => {
     const  {id} =   useParams()
-    const {data}= useGetShopByIdQuery(id)
+    const {data,refetch}= useGetShopByIdQuery(id)
     const fields = [
         {
             name: 'active',
@@ -62,14 +63,21 @@ const Edit_shop = () => {
         billing_type: data?.data?.billing_type || '',
         use_all: data?.data?.use_all || '',
         shop_id: data?.data?.id || ''
+        // m_shop_signature_text: data?.data?.m_shop_signature_text || ''
 
     };
     
    
     const navigate = useNavigate()
-    const [updateShop, { isSuccess }] = useUpdateShopMutation()
-    const { values, errros, handleChange, handleSubmit, handleBlur, setFieldValue } = useFormik({
+    const [updateShop, { isSuccess }] = useUpdateShopMutation();
+
+  useEffect(() => {
+    refetch(); // Trigger the refetch on mount or when the `id` changes
+  }, [id, refetch]); //
+    const { values, errors, handleChange, handleSubmit, handleBlur, touched,setFieldValue } = useFormik({
         initialValues: initialValues,
+        validationSchema: shopValidation,
+
         enableReinitialize:true,
         onSubmit: (async (values, { resetForm }) => {
             try {
@@ -95,7 +103,7 @@ const Edit_shop = () => {
         <div className="content-container">
             <div className="bg-white py-3">
                 <div className="container">
-                    <div className="d-flex"><i className="bi bi-info-circle site-color"></i> &nbsp; <h5>Add Shop</h5>
+                    <div className="d-flex"><i className="bi bi-info-circle site-color"></i> &nbsp; <h5>Edit Shop</h5>
                     </div>
                     <div className="row mt-1">
                         <div className="col-lg-12">
@@ -121,250 +129,325 @@ const Edit_shop = () => {
 
                                         <div className="container mt-3">
                                             <div className="row">
-                                                {
-                                                    fields.map((value, index) => {
-                                                        return <div className="col-lg-2 col-md-4 col-6">
-                                                            <p className="mb-1">{value.title}
-                                                                <div className="switch-container">
-                                                                    <input type="checkbox" id={`switch${index + 1}`} name={value.name} checked={values[value.name]} onChange={() => setFieldValue(value.name, !values[value.name])} />
-                                                                    <div className="switch-color"></div>
-                                                                    <label htmlFor={`switch${index + 1}`}><i class="bi bi-x"></i></label>
-                                                                </div>
-                                                            </p>
-                                                        </div>
-                                                    })
-                                                }
+                                            {
+                        fields.map((value, index) => {
+                          return <div className="col-lg-2 col-md-4 col-6">
+                            <p className="mb-1">{value.title}
+                              <div className="switch-container">
+                                <input type="checkbox" id={`switch${index + 1}`} name={value.name} checked={values[value.name]} onChange={() => setFieldValue(value.name, !values[value.name])} />
+                                <div className="switch-color"></div>
+                                <label htmlFor={`switch${index + 1}`}><i class="bi bi-x"></i></label>
+                              </div>
+                              {touched[value.name] && errors[value.name] ? (
+                                <p style={{ color: '#be3134' }}>{errors[value.name]}</p>
+                              ) : null}
+                            </p>
+                          </div>
+                        })
+                      }
 
 
 
                                             </div>
                                         </div>
 
-                                        <div className="container mt-3">
-                                            <div className="row">
-                                                <div className="col-lg-4 col-md-4">
-                                                    <div className="form-label-group in-border">
-                                                        <input
-                                                            type="text"
-                                                            id="shop_name"
-                                                            className="form-control"
-                                                            name="shop_name"
-                                                            value={values.shop_name}
-                                                            onChange={handleChange}
-                                                            placeholder=" "
-                                                        />
-                                                        <label htmlFor="shop_name" className="floating-label">Shop Name <span>*</span></label>
-                                                    </div>
-                                                </div>
-                                                <div className="col-lg-4 col-md-4">
-                                                    <div className="form-label-group in-border">
-                                                        <input
-                                                            type="text"
-                                                            id="m_shop_name_display"
-                                                            className="form-control"
-                                                            name="m_shop_name_display"
-                                                            value={values.m_shop_name_display}
-                                                            onChange={handleChange}
-                                                            placeholder=" "
-                                                        />
-                                                        <label htmlFor="m_shop_name_display" className="floating-label">Shop Display Name <span>*</span></label>
-                                                    </div>
-                                                </div>
-                                                <div className="col-lg-4 col-md-4">
-                                                    <div className="form-label-group in-border">
-                                                        <input
-                                                            type="text"
-                                                            id="psg_id"
-                                                            className="form-control"
-                                                            name="psg_id"
-                                                            value={values.psg_id}
-                                                            onChange={handleChange}
-                                                            placeholder=" "
-                                                        />
-                                                        <label htmlFor="psg_id" className="floating-label">PSG ID <span>*</span></label>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                   
+                  <div className="container mt-3">
+                    <div className="row">
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="text"
+                            id="shop_name"
+                            className={`form-control ${touched.shop_name && errors.shop_name ? 'is-invalid' : ''}`}
+                            name="shop_name"
+                            value={values.shop_name}
+                            onChange={handleChange}
+                            placeholder=" "
+                            aria-describedby="shopNameError" // For accessibility
+                          />
+                          <label htmlFor="shop_name" className="floating-label">
+                            Shop Name <span className="text-danger">*</span>
+                          </label>
+                          {touched.shop_name && errors.shop_name ? (
+                            <div id="shopNameError" className="invalid-feedback">
+                              {errors.shop_name}
+                            </div>
+                          ) : null}
+                        </div>
 
-                                            <div className="row">
-                                                <div className="col-lg-4 col-md-4">
-                                                    <div className="form-label-group in-border">
-                                                        <input
-                                                            type="text"
-                                                            id="m_webaddress"
-                                                            className="form-control"
-                                                            name="m_webaddress"
-                                                            value={values.m_webaddress}
-                                                            onChange={handleChange}
-                                                            placeholder=" "
-                                                        />
-                                                        <label htmlFor="m_webaddress" className="floating-label">Web Address <span>*</span></label>
-                                                    </div>
-                                                </div>
-                                                <div className="col-lg-4 col-md-4">
-                                                    <div className="form-label-group in-border">
-                                                        <input
-                                                            type="email"
-                                                            id="email"
-                                                            className="form-control"
-                                                            name="email"
-                                                            value={values.email}
-                                                            onChange={handleChange}
-                                                            placeholder=" "
-                                                        />
-                                                        <label htmlFor="email" className="floating-label">Email</label>
-                                                    </div>
-                                                </div>
-                                                <div className="col-lg-4 col-md-4">
-                                                    <div className="form-label-group in-border">
-                                                        <input
-                                                            type="text"
-                                                            id="phone_number"
-                                                            className="form-control"
-                                                            name="phone_number"
-                                                            value={values.phone_number}
-                                                            onChange={handleChange}
-                                                            placeholder=" "
-                                                        />
-                                                        <label htmlFor="phone_number" className="floating-label">Phone Number</label>
-                                                    </div>
-                                                </div>
-                                            </div>
+                      </div>
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="text"
+                            id="m_shop_name_display"
+                            className={`form-control ${touched.m_shop_name_display && errors.m_shop_name_display ? 'is-invalid' : ''}`}
+                            name="m_shop_name_display"
+                            value={values.m_shop_name_display}
+                            onChange={handleChange}
+                            placeholder=" "
+                            aria-describedby="m_shop_name_display" // For accessibility
 
-                                            <div className="row">
-                                                <div className="col-lg-4 col-md-4">
-                                                    <div className="form-label-group in-border">
-                                                        <input
-                                                            type="text"
-                                                            id="address1"
-                                                            className="form-control"
-                                                            name="address1"
-                                                            value={values.address1}
-                                                            onChange={handleChange}
-                                                            placeholder=" "
-                                                        />
-                                                        <label htmlFor="address1" className="floating-label">Address1 <span>*</span></label>
-                                                    </div>
-                                                </div>
-                                                <div className="col-lg-4 col-md-4">
-                                                    <div className="form-label-group in-border">
-                                                        <input
-                                                            type="text"
-                                                            id="m_shop_city"
-                                                            className="form-control"
-                                                            name="m_shop_city"
-                                                            value={values.m_shop_city}
-                                                            onChange={handleChange}
-                                                            placeholder=" "
-                                                        />
-                                                        <label htmlFor="m_shop_city" className="floating-label">City <span>*</span></label>
-                                                    </div>
-                                                </div>
-                                                <div className="col-lg-4 col-md-4">
-                                                    <div className="form-label-group in-border">
-                                                        <input
-                                                            type="text"
-                                                            id="m_shop_state"
-                                                            className="form-control"
-                                                            name="m_shop_state"
-                                                            value={values.m_shop_state}
-                                                            onChange={handleChange}
-                                                            placeholder=" "
-                                                        />
-                                                        <label htmlFor="m_shop_state" className="floating-label">State <span>*</span></label>
-                                                    </div>
-                                                </div>
-                                            </div>
+                          />
+                          <label htmlFor="m_shop_name_display" className="floating-label">Shop Display Name <span>*</span></label>
+                          {touched.m_shop_name_display && errors.m_shop_name_display ? (
+                            <div id="m_shop_name_display" className="invalid-feedback">
+                              {errors.m_shop_name_display}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="text"
+                            id="psg_id"
+                            className={`form-control ${touched.psg_id && errors.psg_id ? 'is-invalid' : ''}`}
+                            name="psg_id"
+                            value={values.psg_id}
+                            onChange={handleChange}
+                            placeholder=" "
+                            aria-describedby="psg_id" // For accessibility
 
-                                            <div className="row">
-                                                <div className="col-lg-8">
-                                                    <div className="row">
-                                                        <div className="col-lg-6 col-md-4">
-                                                            <div className="form-label-group in-border">
-                                                                <input
-                                                                    type="text"
-                                                                    id="address2"
-                                                                    className="form-control"
-                                                                    name="address2"
-                                                                    value={values.address2}
-                                                                    onChange={handleChange}
-                                                                    placeholder=" "
-                                                                />
-                                                                <label htmlFor="address2" className="floating-label">Address2</label>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-6 col-md-4">
-                                                            <div className="form-label-group in-border">
-                                                                <input
-                                                                    type="text"
-                                                                    id="m_shop_zip"
-                                                                    className="form-control"
-                                                                    name="m_shop_zip"
-                                                                    value={values.m_shop_zip}
-                                                                    onChange={handleChange}
-                                                                    placeholder=" "
-                                                                />
-                                                                <label htmlFor="m_shop_zip" className="floating-label">Zip Code <span>*</span></label>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-6 col-md-4">
-                                                            <div className="form-label-group in-border">
-                                                                <input
-                                                                    type="text"
-                                                                    id="first_name"
-                                                                    className="form-control"
-                                                                    name="first_name"
-                                                                    value={values.first_name}
-                                                                    onChange={handleChange}
-                                                                    placeholder=" "
-                                                                />
-                                                                <label htmlFor="first_name" className="floating-label">First Name</label>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-6 col-md-4">
-                                                            <div className="form-label-group in-border">
-                                                                <input
-                                                                    type="text"
-                                                                    id="last_name"
-                                                                    className="form-control"
-                                                                    name="last_name"
-                                                                    value={values.last_name}
-                                                                    onChange={handleChange}
-                                                                    placeholder=" "
-                                                                />
-                                                                <label htmlFor="last_name" className="floating-label">Last Name</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-lg-4">
-                                                    <div className="col-lg-12">
-                                                        <div className="form-label-group in-border">
-                                                            <textarea
-                                                                id="m_shop_signature_text"
-                                                                className="form-control text-area-height"
-                                                                name="m_shop_signature_text"
-                                                                value={values.m_shop_signature_text}
-                                                                onChange={handleChange}
-                                                                placeholder=" "
-                                                            ></textarea>
-                                                            <label htmlFor="m_shop_signature_text" className="floating-label">Signature Text <span>*</span></label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                          />
+                          <label htmlFor="psg_id" className="floating-label">PSG ID <span>*</span></label>
+                          {touched.psg_id && errors.psg_id ? (
+                            <div id="psg_id" className="invalid-feedback">
+                              {errors.psg_id}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="text"
+                            id="m_webaddress"
+                            className={`form-control ${touched.m_webaddress && errors.m_webaddress ? 'is-invalid' : ''}`}
+                            name="m_webaddress"
+                            value={values.m_webaddress}
+                            onChange={handleChange}
+                            placeholder=" "
+                            aria-describedby="m_webaddress" // For accessibility
+
+                          />
+                          <label htmlFor="m_webaddress" className="floating-label">Web Address <span>*</span></label>
+                          {touched.m_webaddress && errors.m_webaddress ? (
+                            <div id="m_webaddress" className="invalid-feedback">
+                              {errors.m_webaddress}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="email"
+                            id="email"
+                            className="form-control"
+                            name="email"
+                            value={values.email}
+                            onChange={handleChange}
+                            placeholder=" "
+                          />
+                          <label htmlFor="email" className="floating-label">Email</label>
+                        </div>
+                      </div>
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="text"
+                            id="phone_number"
+                            className="form-control"
+                            name="phone_number"
+                            value={values.phone_number}
+                            onChange={handleChange}
+                            placeholder=" "
+                          />
+                          <label htmlFor="phone_number" className="floating-label">Phone Number</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="text"
+                            id="address1"
+                            className={`form-control ${touched.address1 && errors.address1 ? 'is-invalid' : ''}`}
+                            name="address1"
+                            value={values.address1}
+                            onChange={handleChange}
+                            placeholder=" "
+                            aria-describedby="address1" // For accessibility
+                          />
+                          <label htmlFor="address1" className="floating-label">Address1 <span>*</span></label>
+                          {touched.address1 && errors.address1 ? (
+                            <div id="address1" className="invalid-feedback">
+                              {errors.address1}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="text"
+                            id="m_shop_city"
+                            className={`form-control ${touched.m_shop_city && errors.m_shop_city ? 'is-invalid' : ''}`}
+                            name="m_shop_city"
+                            value={values.m_shop_city}
+                            onChange={handleChange}
+                            placeholder=" "
+                            aria-describedby="m_shop_city" // For accessibility
+                          />
+                          <label htmlFor="m_shop_city" className="floating-label">City <span>*</span></label>
+                          {touched.m_shop_city && errors.m_shop_city ? (
+                            <div id="m_shop_city" className="invalid-feedback">
+                              {errors.m_shop_city}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="text"
+                            id="m_shop_state"
+                            className={`form-control ${touched.m_shop_state && errors.m_shop_state ? 'is-invalid' : ''}`}
+                            name="m_shop_state"
+                            value={values.m_shop_state}
+                            onChange={handleChange}
+                            placeholder=" "
+                            aria-describedby="m_shop_state" // For accessibility
+                          />
+                          <label htmlFor="m_shop_state" className="floating-label">State <span>*</span></label>
+                          {touched.m_shop_state && errors.m_shop_state ? (
+                            <div id="m_shop_state" className="invalid-feedback">
+                              {errors.m_shop_state}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
 
 
-                                        <div className="container mt-3">
-                                            <div className="row">
-                                                <div className="col-lg-8">
-                                                    <h5>Email From</h5>
-                                                    <p>Fill only if the domian is verified in the Campaign Monitor!!!</p>
-                                                    <input type="text" className="form-control" name="email_from" value={values.email_from} onChange={handleChange} />
-                                                </div>
-                                            </div>
-                                        </div>
+                    <div className="row">
+                      <div className="col-lg-8">
+                        <div className="row">
+                          <div className="col-lg-6 col-md-4">
+                            <div className="form-label-group in-border">
+                              <input
+                                type="text"
+                                id="address2"
+                                className="form-control"
+                                name="address2"
+                                value={values.address2}
+                                onChange={handleChange}
+                                placeholder=" "
+                              />
+                              <label htmlFor="address2" className="floating-label">Address2</label>
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-4">
+                            <div className="form-label-group in-border">
+                              <input
+                                type="text"
+                                id="m_shop_zip"
+                                className={`form-control ${touched.m_shop_zip && errors.m_shop_zip ? 'is-invalid' : ''}`}
+                                name="m_shop_zip"
+                                value={values.m_shop_zip}
+                                onChange={handleChange}
+                                placeholder=" "
+                                aria-describedby="m_shop_zip" // For accessibility
+
+                              />
+                              <label htmlFor="m_shop_zip" className="floating-label">Zip Code <span>*</span></label>
+                              {touched.m_shop_zip && errors.m_shop_zip ? (
+                                <div id="m_shop_zip" className="invalid-feedback">
+                                  {errors.m_shop_zip}
+                                </div>
+                              ) : null}
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-4">
+                            <div className="form-label-group in-border">
+                              <input
+                                type="text"
+                                id="first_name"
+                                className="form-control"
+                                name="first_name"
+                                value={values.first_name}
+                                onChange={handleChange}
+                                placeholder=" "
+                              />
+                              <label htmlFor="first_name" className="floating-label">First Name</label>
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-4">
+                            <div className="form-label-group in-border">
+                              <input
+                                type="text"
+                                id="last_name"
+                                className="form-control"
+                                name="last_name"
+                                value={values.last_name}
+                                onChange={handleChange}
+                                placeholder=" "
+                              />
+                              <label htmlFor="last_name" className="floating-label">Last Name</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-lg-4">
+                        <div className="col-lg-12">
+                          <div className={`form-label-group in-border ${touched.m_shop_signature_text && errors.m_shop_signature_text ? 'is-invalid' : ''}`}>
+                            <textarea
+                              id="m_shop_signature_text"
+                              className={`form-control text-area-height ${touched.m_shop_signature_text && errors.m_shop_signature_text ? 'is-invalid' : ''}`}
+
+                              name="m_shop_signature_text"
+                              value={values.m_shop_signature_text}
+                              onChange={handleChange}
+                              placeholder=" "
+                              aria-describedby="m_shop_signature_text" // For accessibility
+
+                            ></textarea>
+                            <label htmlFor="m_shop_signature_text" className="floating-label">Signature Text <span>*</span></label>
+                            {touched.m_shop_signature_text && errors.m_shop_signature_text ? (
+                              <div id="m_shop_signature_text" className="invalid-feedback">
+                                {errors.m_shop_signature_text}
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div className="container mt-3">
+                    <div className="row">
+                      <div className="col-lg-8">
+                        <h5>Email From</h5>
+                        <p>Fill only if the domian is verified in the Campaign Monitor!!!</p>
+                        <input type="text" className={`form-control  ${touched.email_from && errors.email_from ? 'is-invalid' : ''}`} name="email_from" value={values.email_from} onChange={handleChange} />
+                        {touched.email_from && errors.email_from ? (
+                          <div id="email_from" className="invalid-feedback">
+                            {errors.email_from}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
 
                                         <div className="container mt-3">
                                             <div className="row">

@@ -10,14 +10,16 @@ import { useGetAllShopsNameQuery } from "../../redux/QueryAPi/shopApi";
 import moment from 'moment';
 
 const View_Edit = () => {
-    const [updateCustomer, { isSuccess }] = useUpdateCustomerMutation()
+    const [updateCustomer, { isSuccess ,isLoading}] = useUpdateCustomerMutation()
     const { id } = useParams()
     const selectRef = useRef(null)
-    const { data } = useGetCustomerByIdQuery(id)
+    const { data,refetch } = useGetCustomerByIdQuery(id)
     const [isEdit, setEdit] = useState(true)
     const navigate = useNavigate()
  
-  
+    useEffect(() => {
+        refetch();  // Force refetch on page load or after component mount
+      }, [id, refetch]);
     
     const initialValues = {
         customer_id: id,
@@ -37,8 +39,8 @@ const View_Edit = () => {
         VehicleArrivedDate:ChangeDate(data?.data?.VehicleArrivedDate) || '',
         RepairStartedDate: ChangeDate(data?.data?.RepairStartedDate) || '',
         DeliveredDate: ChangeDate(data?.data?.DeliveredDate)|| '',
-        VehicleYear: ChangeDate(data?.data?.VehicleYear )|| '',
-        VehicleMake: ChangeDate(data?.data?.VehicleMake )|| '',
+        VehicleYear: data?.data?.VehicleYear||'',
+        VehicleMake: data?.data?.VehicleMake|| '',
         VehicleModel:ChangeDate( data?.data?.VehicleModel )|| '',
         BusinessKeyPSG: data?.data?.BusinessKeyPSG || '',
         BUName: data?.data?.BUName || '',
@@ -88,11 +90,13 @@ const View_Edit = () => {
             try {
                 await updateCustomer(modifiedValues)
             } catch (error) {
-                console.log(error)
+                console.error('Error during customer update:', error);
             }
 
         }
     })
+    console.log('Validation Errors:', errors); // Log the errors object to inspect what is failing
+
     const handleScroll = (event) => {
         console.log('Scroll event:', event);
         // You can log additional info, like the current scroll position
@@ -563,7 +567,7 @@ const View_Edit = () => {
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
                                                     <input
-                                                        type="date"
+                                                        type="text"
                                                         id="VehicleYear"
                                                         className={`form-control ${touched.VehicleYear && errors.VehicleYear ? 'is-invalid' : ''}`}
                                                         name="VehicleYear"
@@ -589,7 +593,7 @@ const View_Edit = () => {
                                                     <input
                                                         type="text"
                                                         id="VehicleMake"
-                                                        className={`form-control ${touched.VehicleMake && errors.VehicleMake ? 'is-invalid' : ''}`}
+                                                        className={`form-control ${touched.VehicleMake && errors.VehicleMake ? '' : ''}`}
                                                         name="VehicleMake"
                                                         value={values.VehicleMake}
                                                         onChange={handleChange}
@@ -602,7 +606,7 @@ const View_Edit = () => {
                                                         Vehicle Make <span className="text-danger">*</span>
                                                     </label>
                                                     {touched.VehicleMake && errors.VehicleMake && (
-                                                        <div className="invalid-feedback">{errors.VehicleMake}</div>
+                                                        <div style={{color:'#DC3545'}}>{errors.VehicleMake}</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -824,7 +828,7 @@ const View_Edit = () => {
                                                     <input
                                                         type="text"
                                                         id="OwnerHomePhone"
-                                                        className="form-control"
+                                                        className={`form-control ${touched.OwnerHomePhone && errors.OwnerHomePhone ? 'is-invalid' : ''}`}
                                                         placeholder=" "
                                                         disabled={isEdit}
                                                         name="OwnerHomePhone"
@@ -1096,7 +1100,7 @@ const View_Edit = () => {
                                             </div>
                                         </div>
 
-                                        <div className="row">
+                                        <div className="row ">
                                             <div className="col-lg-4 col-md-4">
                                                 <div className="form-label-group in-border">
                                                     <input
@@ -1164,75 +1168,75 @@ const View_Edit = () => {
                                         </div>
 
 
-                                        <div className="row">
+                                        <div className="row pb-2">
                                             <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
+                                                <div className=" in-border">
                                                     <input type="checkbox" id="update_definitions_on_save" name="update_definitions_on_save"
-                                                        checked={values.update_definitions_on_save === 1} // Check if value is 1
+                                                        checked={values.update_definitions_on_save === '1'} // Check if value is 1
                                                         onChange={(e) => {
-                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            const value = e.target.checked ? '1' : '0'; // Convert to 1 or 0
                                                             setFieldValue("update_definitions_on_save", value); // Use setFieldValue
                                                         }}
                                                         disabled={isEdit}
 
                                                     />
-                                                    <label htmlFor="update_definitions_on_save" className="floating-label">Update Definitions on Save</label>
+                                                    <label htmlFor="update_definitions_on_save" className="floating-label" style={{ paddingLeft: '5px'}}>Update Definitions on Save</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
+                                                <div className=" in-border">
                                                     <input type="checkbox" id="sms_log" name="sms_log"
-                                                        checked={values.sms_log === 1} // Check if value is 1
+                                                        checked={values.sms_log === '1'} // Check if value is 1
                                                         onChange={(e) => {
-                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            const value = e.target.checked ? '1' : '0'; // Convert to 1 or 0
                                                             setFieldValue("sms_log", value); // Use setFieldValue
                                                         }}
                                                         disabled={isEdit}
 
                                                     />
-                                                    <label htmlFor="sms_log" className="floating-label">SMS Log</label>
+                                                    <label htmlFor="sms_log" className="floating-label" style={{ paddingLeft: '5px'}}>SMS Log</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
+                                                <div className=" in-border">
                                                     <input type="checkbox" id="invalidron" name="invalidron"
-                                                        checked={values.invalidron === 1} // Check if value is 1
+                                                        checked={values.invalidron === '1'} // Check if value is 1
                                                         onChange={(e) => {
-                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            const value = e.target.checked ? '1' : '0'; // Convert to 1 or 0
                                                             setFieldValue("invalidron", value); // Use setFieldValue
                                                         }}
                                                         disabled={isEdit}
                                                         />
-                                                    <label htmlFor="invalidron" className="floating-label">Invalid RO Number</label>
+                                                    <label htmlFor="invalidron" className="floating-label" style={{ paddingLeft: '5px'}}>Invalid RO Number</label>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="row">
                                             <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
+                                                <div className=" in-border">
                                                     <input type="checkbox" id="sst_definitions" name="sst_definitions"
-                                                        checked={values.sst_definitions === 1} // Check if value is 1
+                                                        checked={values.sst_definitions === '1'} // Check if value is 1
                                                         onChange={(e) => {
-                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            const value = e.target.checked ? '1' : '0'; // Convert to 1 or 0
                                                             setFieldValue("sst_definitions", value); // Use setFieldValue
                                                         }}
                                                         disabled={isEdit}
                                                         />
-                                                    <label htmlFor="sst_definitions" className="floating-label">SST Definitions</label>
+                                                    <label htmlFor="sst_definitions" className="floating-label" style={{ paddingLeft: '5px'}}>SST Definitions</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
-                                                <div className="form-label-group in-border">
+                                                <div className=" in-border">
                                                     <input type="checkbox" id="scheduled_dm" name="scheduled_dm"
-                                                        checked={values.scheduled_dm === 1} // Check if value is 1
+                                                        checked={values.scheduled_dm === '1'} // Check if value is 1
                                                         onChange={(e) => {
-                                                            const value = e.target.checked ? 1 : 0; // Convert to 1 or 0
+                                                            const value = e.target.checked ? '1' : '0'; // Convert to 1 or 0
                                                             setFieldValue("scheduled_dm", value); // Use setFieldValue
                                                         }} 
                                                         disabled={isEdit}
 />
-                                                    <label htmlFor="scheduled_dm" className="floating-label">Scheduled DM</label>
+                                                    <label htmlFor="scheduled_dm" className="floating-label" style={{ paddingLeft: '5px'}}>Scheduled DM</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -1246,7 +1250,7 @@ const View_Edit = () => {
                                     <div className="container mt-3">
                                         <div className="row">
                                             <div className="text-center">
-                                                <button type="submit" className="btn sub-btn" disabled={isEdit} onClick={handleSubmit}>SAVE</button>
+                                                <button type="submit" className="btn sub-btn" disabled={isEdit} onClick={handleSubmit}>{isLoading ? 'UPDATING...':'UPDATE'}</button>
                                             </div>
                                         </div>
                                     </div>

@@ -59,11 +59,12 @@ const Add_shop = () => {
     email_header: null,
     name_rate: null,
     billing_type: null,
-    use_all: null,
+    use_all: null
+    // m_shop_signature_text: null
 
   };
   const navigate = useNavigate()
-  const [addShop, { isSuccess,isLoading }] = useAddShopMutation()
+  const [addShop, { isSuccess, isLoading }] = useAddShopMutation()
   const { values, errors, handleChange, handleSubmit, handleBlur, setFieldValue, touched } = useFormik({
     initialValues: initialValues,
     validationSchema: shopValidation,
@@ -259,69 +260,69 @@ const Add_shop = () => {
                     </div>
 
                     <div className="row">
-  <div className="col-lg-4 col-md-4">
-    <div className="form-label-group in-border">
-      <input
-        type="text"
-        id="address1"
-        className={`form-control ${touched.address1 && errors.address1 ? 'is-invalid' : ''}`}
-        name="address1"
-        value={values.address1}
-        onChange={handleChange}
-        placeholder=" "
-        aria-describedby="address1" // For accessibility
-      />
-      <label htmlFor="address1" className="floating-label">Address1 <span>*</span></label>
-      {touched.address1 && errors.address1 ? (
-        <div id="address1" className="invalid-feedback">
-          {errors.address1}
-        </div>
-      ) : null}
-    </div>
-  </div>
-  
-  <div className="col-lg-4 col-md-4">
-    <div className="form-label-group in-border">
-      <input
-        type="text"
-        id="m_shop_city"
-        className={`form-control ${touched.m_shop_city && errors.m_shop_city ? 'is-invalid' : ''}`}
-        name="m_shop_city"
-        value={values.m_shop_city}
-        onChange={handleChange}
-        placeholder=" "
-        aria-describedby="m_shop_city" // For accessibility
-      />
-      <label htmlFor="m_shop_city" className="floating-label">City <span>*</span></label>
-      {touched.m_shop_city && errors.m_shop_city ? (
-        <div id="m_shop_city" className="invalid-feedback">
-          {errors.m_shop_city}
-        </div>
-      ) : null}
-    </div>
-  </div>
-  
-  <div className="col-lg-4 col-md-4">
-    <div className="form-label-group in-border">
-      <input
-        type="text"
-        id="m_shop_state"
-        className={`form-control ${touched.m_shop_state && errors.m_shop_state ? 'is-invalid' : ''}`}
-        name="m_shop_state"
-        value={values.m_shop_state}
-        onChange={handleChange}
-        placeholder=" "
-        aria-describedby="m_shop_state" // For accessibility
-      />
-      <label htmlFor="m_shop_state" className="floating-label">State <span>*</span></label>
-      {touched.m_shop_state && errors.m_shop_state ? (
-        <div id="m_shop_state" className="invalid-feedback">
-          {errors.m_shop_state}
-        </div>
-      ) : null}
-    </div>
-  </div>
-</div>
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="text"
+                            id="address1"
+                            className={`form-control ${touched.address1 && errors.address1 ? 'is-invalid' : ''}`}
+                            name="address1"
+                            value={values.address1}
+                            onChange={handleChange}
+                            placeholder=" "
+                            aria-describedby="address1" // For accessibility
+                          />
+                          <label htmlFor="address1" className="floating-label">Address1 <span>*</span></label>
+                          {touched.address1 && errors.address1 ? (
+                            <div id="address1" className="invalid-feedback">
+                              {errors.address1}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="text"
+                            id="m_shop_city"
+                            className={`form-control ${touched.m_shop_city && errors.m_shop_city ? 'is-invalid' : ''}`}
+                            name="m_shop_city"
+                            value={values.m_shop_city}
+                            onChange={handleChange}
+                            placeholder=" "
+                            aria-describedby="m_shop_city" // For accessibility
+                          />
+                          <label htmlFor="m_shop_city" className="floating-label">City <span>*</span></label>
+                          {touched.m_shop_city && errors.m_shop_city ? (
+                            <div id="m_shop_city" className="invalid-feedback">
+                              {errors.m_shop_city}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+
+                      <div className="col-lg-4 col-md-4">
+                        <div className="form-label-group in-border">
+                          <input
+                            type="text"
+                            id="m_shop_state"
+                            className={`form-control ${touched.m_shop_state && errors.m_shop_state ? 'is-invalid' : ''}`}
+                            name="m_shop_state"
+                            value={values.m_shop_state}
+                            onChange={handleChange}
+                            placeholder=" "
+                            aria-describedby="m_shop_state" // For accessibility
+                          />
+                          <label htmlFor="m_shop_state" className="floating-label">State <span>*</span></label>
+                          {touched.m_shop_state && errors.m_shop_state ? (
+                            <div id="m_shop_state" className="invalid-feedback">
+                              {errors.m_shop_state}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
 
 
                     <div className="row">
@@ -356,10 +357,10 @@ const Add_shop = () => {
                               />
                               <label htmlFor="m_shop_zip" className="floating-label">Zip Code <span>*</span></label>
                               {touched.m_shop_zip && errors.m_shop_zip ? (
-        <div id="m_shop_zip" className="invalid-feedback">
-          {errors.m_shop_zip}
-        </div>
-      ) : null}
+                                <div id="m_shop_zip" className="invalid-feedback">
+                                  {errors.m_shop_zip}
+                                </div>
+                              ) : null}
                             </div>
                           </div>
                           <div className="col-lg-6 col-md-4">
@@ -394,10 +395,10 @@ const Add_shop = () => {
                       </div>
                       <div className="col-lg-4">
                         <div className="col-lg-12">
-                          <div className="form-label-group in-border">
+                          <div className={`form-label-group in-border ${touched.m_shop_signature_text && errors.m_shop_signature_text ? 'is-invalid' : ''}`}>
                             <textarea
                               id="m_shop_signature_text"
-                              className={`form-control text-area-height "${touched.m_shop_signature_text && errors.m_shop_signature_text ? 'is-invalid' : ''}`}
+                              className={`form-control text-area-height ${touched.m_shop_signature_text && errors.m_shop_signature_text ? 'is-invalid' : ''}`}
 
                               name="m_shop_signature_text"
                               value={values.m_shop_signature_text}
@@ -408,10 +409,10 @@ const Add_shop = () => {
                             ></textarea>
                             <label htmlFor="m_shop_signature_text" className="floating-label">Signature Text <span>*</span></label>
                             {touched.m_shop_signature_text && errors.m_shop_signature_text ? (
-        <div id="m_shop_signature_text" className="invalid-feedback">
-          {errors.m_shop_signature_text}
-        </div>
-      ) : null}
+                              <div id="m_shop_signature_text" className="invalid-feedback">
+                                {errors.m_shop_signature_text}
+                              </div>
+                            ) : null}
                           </div>
                         </div>
                       </div>
@@ -424,7 +425,12 @@ const Add_shop = () => {
                       <div className="col-lg-8">
                         <h5>Email From</h5>
                         <p>Fill only if the domian is verified in the Campaign Monitor!!!</p>
-                        <input type="text" className="form-control" name="email_from" value={values.email_from} onChange={handleChange} />
+                        <input type="text" className={`form-control  ${touched.email_from && errors.email_from ? 'is-invalid' : ''}`} name="email_from" value={values.email_from} onChange={handleChange} />
+                        {touched.email_from && errors.email_from ? (
+                          <div id="email_from" className="invalid-feedback">
+                            {errors.email_from}
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -517,7 +523,7 @@ const Add_shop = () => {
                   <div className="container mt-3">
                     <div className="row">
                       <div className="text-center">
-                        <button type="submit" className="btn sub-btn" onClick={handleSubmit} >{isLoading ? 'Saving...':'Save'}</button>
+                        <button type="submit" className="btn sub-btn" onClick={handleSubmit} >{isLoading ? 'Saving...' : 'Save'}</button>
                       </div>
                     </div>
                   </div>
