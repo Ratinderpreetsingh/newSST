@@ -93,6 +93,7 @@ const AddCustomer = () => {
     const handleUploadCsvFile = async () => {
         try {
             await importCustomerCSV(csvFile); // Assuming this is an async mutation
+            toast.success("Customer Import Succesfully")
 
         } catch (error) {
             console.error('Error importing CSV:', err);
@@ -1160,7 +1161,7 @@ const AddCustomer = () => {
                                                             setFieldValue("update_definitions_on_save", value); // Use setFieldValue
                                                         }}
                                                     />
-                                                    <label htmlFor="update_definitions_on_save" className="floating-label">Update Definitions on Save</label>
+                                                    <label for="update_definitions_on_save" className="floating-label">Update Definitions on Save</label>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4">
@@ -1233,7 +1234,7 @@ const AddCustomer = () => {
                                             <div className="col-12 d-flex justify-content-center">
                                                 <div className="import-box text-center">
                                                     <div className="p-3">
-                                                        <h6 className="m-0">Import Shop's CSV file</h6>
+                                                        <h6 className="m-0">Import Customer's CSV file</h6>
                                                     </div>
                                                     <div className="border-bottom"></div>
                                                     <div className="import-box-rounded">

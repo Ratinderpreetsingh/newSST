@@ -5,22 +5,34 @@ export const generatePDF = (productData) => {
 
     let y = 10;  // Define the starting position for text
     const pageHeight = doc.internal.pageSize.height; // Get page height
+    const margin = 10; // Margin for the text
 
-    // Helper function to add text and check for page overflow
+    // Helper function to add text and check for page overflow with wrapping
     const addText = (text) => {
+        // Split the text into an array of lines that fit within the page width
+        const maxWidth = doc.internal.pageSize.width - 2 * margin; // The maximum width of the page minus the margins
+        const lines = doc.splitTextToSize(text, maxWidth);
+
         // Check if we need to add a new page
-        if (y + 10 > pageHeight) {
+        if (y + lines.length * 10 > pageHeight) {
             doc.addPage();  // Add a new page
             y = 10;  // Reset y to start near the top of the new page
         }
-        doc.text(text, 10, y);  // Add text at the current position
-        y += 10;  // Increment y position for the next text line
+
+        // Add each line to the PDF
+        lines.forEach(line => {
+            doc.text(line, margin, y);  // Add the line of text at the current position
+            y += 10;  // Increment y position for the next line of text
+        });
     };
 
     // Add Customer Information
     addText(`Customer Name: ${productData?.OwnerFName} ${productData?.OwnerLName}`);
     addText(`Company Name: ${productData?.OwnerCompanyName}`);
-    addText(`Address: ${productData?.OwnerAddress1}, ${productData?.OwnerAddress2 ? productData?.OwnerAddress2 + ', ' : ''}${productData?.OwnerCity}, ${productData?.OwnerStateProvince} ${productData?.OwnerPostalZip}`);
+    addText(`Address: ${productData?.OwnerAddress1}, ${productData?.OwnerAddress2 ? productData?.OwnerAddress2 + ', ' : ''}`);
+    addText(`State: ${productData?.OwnerStateProvince}`);
+    addText(`City: ${productData?.OwnerCity}`);
+    addText(`Zipcode: ${productData?.OwnerPostalZip}`);
     addText(`Email: ${productData?.OwnerEmail}`);
     addText(`Cell Phone: ${productData?.OwnerCellPhone}`);
     addText(`Home Phone: ${productData?.OwnerHomePhone}`);

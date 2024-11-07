@@ -121,10 +121,10 @@ const View_Edit = () => {
                                             data-bs-target="#nav-shop" type="button" role="tab" aria-controls="nav-shop" aria-selected="true">
                                             Customer
                                         </div>
-                                        <div className="tab-nav-link px-2 py-2" id="nav-media-tab" data-bs-toggle="tab" data-bs-target="#nav-media"
+                                        {/* <div className="tab-nav-link px-2 py-2" id="nav-media-tab" data-bs-toggle="tab" data-bs-target="#nav-media"
                                             type="button" role="tab" aria-controls="nav-media" aria-selected="false">
                                             Import CSV file
-                                        </div>
+                                        </div> */}
                                     </div>
 
                                 </nav>
@@ -1252,35 +1252,6 @@ const View_Edit = () => {
                                     </div>
                                 </div>
 
-                                <div className="tab-pane fade" id="nav-media" role="tabpanel" aria-labelledby="nav-media-tab" tabindex="0">
-                                    <div className="container mt-3">
-                                        <div className="row">
-                                            <div className="col-12 d-flex justify-content-center">
-                                                <div className="import-box text-center">
-                                                    <div className="p-3">
-                                                        <h6 className="m-0">Import Shop's CSV file</h6>
-                                                    </div>
-                                                    <div className="border-bottom"></div>
-                                                    <div className="import-box-rounded">
-                                                        <div className="import-dropzone-desc">
-                                                            <button type="button" className="btn sub-btn">Select CSV file</button>
-                                                            <p>or Drag and Drop Here</p>
-                                                            <input type="file" name="csv_file" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="container mt-3">
-                                        <div className="row">
-                                            <div className="text-center">
-                                                <button type="submit" className="btn sub-btn">Save</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
