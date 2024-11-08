@@ -38,6 +38,9 @@ export const DASHBOARD = {
     EDIT_SHOPS :"v1/shop-edit",
     UPDATE_SHOPS :"v1/shop-update",
     DROP_DOWN_SHOPS :"v1/shop-all",
+    SHOP_ASSIGN:"v1/shop-assign",
+
+    
 
 
   }
