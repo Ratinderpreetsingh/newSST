@@ -86,6 +86,7 @@ export const shopApi = baseApi.injectEndpoints({
       },
     }),
 
+
     // update SHOP
 
     updateShop: build.mutation({
@@ -98,6 +99,8 @@ export const shopApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["Shop"],
     }),
+
+
     // updare assign
 
     shopAssign: build.mutation({
@@ -111,19 +114,25 @@ export const shopApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["Shop"],
     }),
-
+    // delete shop
     deleteShop: build.mutation({
-        query: (id) => {
-  
-          return {
-            url: `v1/shop-delete/${id}`,
-            method: 'DELETE',
-          }
-        },
-  
-        // Specify what data to invalidate after this mutation
-        invalidatesTags: ['Shop'],
-    })
+      query: (id) => {
+
+        return {
+          url: `v1/shop-delete/${id}`,
+          method: 'DELETE',
+        }
+      },
+
+      // Specify what data to invalidate after this mutation
+      invalidatesTags: ['Shop'],
+    }),
+
+
+    // getCustomer by shop
+    getCustomerByShop: build.query({
+      query: (id) => `v1/customer/by/shop/${id}`,  // This is the endpoint URL
+    }),
   }),
   overrideExisting: false,
 });
@@ -136,4 +145,5 @@ export const {
   useUpdateShopMutation,
   useShopAssignMutation,
   useDeleteShopMutation,
+  useGetCustomerByShopQuery 
 } = shopApi;

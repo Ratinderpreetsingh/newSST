@@ -15,6 +15,8 @@ export const ShopPath = {
   SHOP: "shop", 
   EDIT_SHOP: "edit_shop/:id", 
   SHOP_CUSTOMER: "shop-custmer-list", 
+  SHOP_CUSTOMERS: "shop-with-customr-list/:id", 
+
 
 
 };

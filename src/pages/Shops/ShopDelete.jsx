@@ -6,6 +6,7 @@ import {
   useGetAllShopsNameQuery,
   useShopAssignMutation,
 } from "../../redux/QueryAPi/shopApi";
+import { toast } from "react-toastify";
 
 const useShopDeleteModal = () => {
   const [show, setShow] = useState(false);
@@ -49,7 +50,7 @@ const [deleteShop,{isLoading}]=useDeleteShopMutation()
       try {
         await shopAssign(ids);
         setShow(false);
-        console.log("Shop assigned successfully");
+        toast.success("Shop assigned successfully")
       } catch (error) {
         console.error("Error assigning shop:", error);
       }
@@ -63,6 +64,8 @@ const [deleteShop,{isLoading}]=useDeleteShopMutation()
       console.log("Delete confirmed");
       // Perform delete action here or trigger an API call
       await  deleteShop(shopID)
+      toast.success("Shop Delete successfully")
+
           handleClose();
     } else {
       console.error("Please confirm the deletion by checking the box");

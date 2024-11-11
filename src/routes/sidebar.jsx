@@ -27,6 +27,7 @@ export const sidebarRoutes = [
       { title: "Add Customer", path: CustomerPath.ADD_CUSTOMER},
       { title: "Customer", path: CustomerPath.CUSTOMER },
     ],
+    
   },
   {
     title: "Shops",

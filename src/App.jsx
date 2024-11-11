@@ -34,6 +34,7 @@ import Im_Ex_Shop from './pages/Import_Export/Im_Ex_Shop.jsx';
 import Im_Ex_Customer from './pages/Import_Export/Im_Ex_Customer.jsx';
 import View_Edit from './pages/Customer/View_Edit_Customer.jsx';
 import ShopCustomer from './pages/Shops/ShopCustomer.jsx';
+import ShopCustomers from './pages/Shops/ShopCustomers.jsx';
 
 const App = () => {
   const [isAuthenticated, setAuthenticated] = useState(null);
@@ -78,6 +79,8 @@ const App = () => {
           <Route path={ShopPath.SHOP} element={<Shop />} />
           <Route path={ShopPath.EDIT_SHOP} element={<Edit_shop />} />
           <Route path={ShopPath.SHOP_CUSTOMER} element={<ShopCustomer />} />
+          <Route path={ShopPath.SHOP_CUSTOMERS} element={<ShopCustomers/>} />
+
 
 
           <Route path={DefinitionPath.DEFINITION} element={<Definition />} />

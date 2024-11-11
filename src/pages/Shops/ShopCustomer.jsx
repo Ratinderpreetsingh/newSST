@@ -4,6 +4,7 @@ import Pagination from "../../Custom_hooks/Pagination";
 import useDebounce from "../../Custom_hooks/Debouncing";
 import { useNavigate } from "react-router-dom";
 import useShopDeleteModal from "./ShopDelete";
+import { ShopPath } from "../../Constant/Pages_Routes";
 
 const ShopCustomer = () => {
   const { handleShow, ModalComponent } = useShopDeleteModal()
@@ -38,6 +39,11 @@ const ShopCustomer = () => {
   }
   const handleEdit = (id) => {
     navigate(`/edit_shop/${id}`)
+  }
+  const handleViewCutomer =(id)=>{
+    // navigate(`/${ShopPath.SHOP_CUSTOMERS}`)
+    navigate(`/shop-with-customr-list/${id}`)
+
   }
   useEffect(() => {
     window.scrollTo(0, 0); // Scroll to top when the component mounts
@@ -151,7 +157,7 @@ const ShopCustomer = () => {
                      
                         <th>Phone Number</th>
                 
-                      
+                       <th>View Customers</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -165,6 +171,7 @@ const ShopCustomer = () => {
                             <td>{shop?.m_shop_name_display || "-"}</td>
                             <td>{shop?.psg_id || "-"}</td>
                             <td>{shop?.phone_number || "-"}</td>
+                            <td style={{paddingLeft:'55px'}}><button className="btn btn-sm btn-outline-danger p-1" onClick={()=>handleViewCutomer(shop?.id)}><i className="bi bi-eye"></i></button> </td>
 
                             <td>
                               <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-cart"></i></button>
