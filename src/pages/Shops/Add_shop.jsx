@@ -116,14 +116,14 @@ const Add_shop = () => {
 
                   <div className="container mt-3">
                     <div className="row">
-                      {
+                      {/* {
                         fields.map((value, index) => {
                           return <div className="col-lg-2 col-md-4 col-6">
                             <p className="mb-1">{value.title}
                               <div className="switch-container">
                                 <input type="checkbox" id={`switch${index + 1}`} name={value.name} checked={values[value.name]} onChange={() => setFieldValue(value.name, !values[value.name])} />
                                 <div className="switch-color"></div>
-                                <label htmlFor={`switch${index + 1}`}><i class="bi bi-x"></i></label>
+                                <label htmlFor={`switch${index + 1}`}><i class="bi bi-x"></i><i class="bi bi-check2"></i></label>
                               </div>
                               {touched[value.name] && errors[value.name] ? (
                                 <p style={{ color: '#be3134' }}>{errors[value.name]}</p>
@@ -131,8 +131,41 @@ const Add_shop = () => {
                             </p>
                           </div>
                         })
-                      }
+                      } */}
+                      
 
+                      {
+  fields.map((value, index) => {
+    return (
+      <div className="col-lg-2 col-md-4 col-6" key={index}>
+        <p className="mb-1"  style={{display:'flex',flexDirection:'column'}}>
+          {value.title}
+          <div className="switch-container">
+            <input
+              type="checkbox"
+              id={`switch${index + 1}`}
+              name={value.name}
+              checked={values[value.name] || false} // Ensure it's either true or false
+              onChange={() => setFieldValue(value.name, !values[value.name])}
+            />
+            <div className="switch-color"></div>
+            <label htmlFor={`switch${index + 1}`}>
+              {/* Conditionally render the icon */}
+              {values[value.name] ? (
+                <i className="bi bi-check2"></i>
+              ) : (
+                <i className="bi bi-x"></i>
+              )}
+            </label>
+          </div>
+          {touched[value.name] && errors[value.name] ? (
+            <p style={{ color: '#be3134' }}>{errors[value.name]}</p>
+          ) : null}
+        </p>
+      </div>
+    );
+  })
+}
 
 
                     </div>

@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useGetAllDashbaordQuery } from "../../redux/QueryAPi/dashboard";
 import { getCookie } from "../../utils/Cookies";
 import Customer from "./Comp/Customer";
 import Shops from "./Comp/Shops";
 import { ModifyDate } from "../../utils/ModifyDate";
+import useDeleteModal from "../../Custom_hooks/DeleteModal";
 
 const Dashboard = () => {
   const res= getCookie('auth')
@@ -63,7 +64,7 @@ const Dashboard = () => {
   const modifyDate = useMemo(() => ModifyDate(queries.delivery_date), [queries.delivery_date]);
   const modifycleanup = useMemo(() => ModifyDate(queries.cleanup), [queries.cleanup]);
 
-  const {data:dashbaord,isLoading}=useGetAllDashbaordQuery({page:page,
+  const {data:dashbaord,isLoading,refetch}=useGetAllDashbaordQuery({page:page,
                                                             shopsearch:search,
                                                             shopstatus:status,
                                                             cleanup: modifycleanup,
@@ -73,6 +74,15 @@ const Dashboard = () => {
                                                             delivery_date:  modifyDate,
                                                             search: queries.search, 
                                                             })
+const { handleShow, ModalComponent,isLoading:deletLoading ,isSuccess } = useDeleteModal();
+console.log(isSuccess,"isSuccess")
+useEffect(() => {
+  console.log("isSuccess value:", isSuccess);  // Debugging line
+  if (isSuccess) {
+    refetch();  // Trigger refetch to update the dashboard data
+  }
+}, [isSuccess, refetch]);
+                                        
   return (
     <>
       <div className="content-container">
@@ -556,7 +566,16 @@ const Dashboard = () => {
           </div>
 
           <div className="row">
-          <Customer customer={dashbaord?.customer_lists} isLoading={isLoading} handleQuery={handleQuery} queries={queries} handleClear={handleClear}/>
+          <Customer 
+                  customer={dashbaord?.customer_lists} 
+                  isLoading={isLoading} 
+                  handleQuery={handleQuery} 
+                  queries={queries} 
+                  handleClear={handleClear}
+                  handleShow={handleShow}
+                  ModalComponent={ModalComponent}
+                  deletLoading={deletLoading}
+                  />
        
           </div>
         </div>

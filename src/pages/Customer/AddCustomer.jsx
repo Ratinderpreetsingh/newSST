@@ -7,6 +7,7 @@ import { useGetAllShopsNameQuery } from "../../redux/QueryAPi/shopApi";
 import { ModifyDate } from "../../utils/ModifyDate";
 import useImportCsv from "../../utils/ImportCsv";
 import useImportCsvFile from "../../Custom_hooks/ImportCsvFile";
+import { toast } from "react-toastify";
 
 const AddCustomer = () => {
     const navigate = useNavigate()
@@ -93,7 +94,6 @@ const AddCustomer = () => {
     const handleUploadCsvFile = async () => {
         try {
             await importCustomerCSV(csvFile); // Assuming this is an async mutation
-            toast.success("Customer Import Succesfully")
 
         } catch (error) {
             console.error('Error importing CSV:', err);
@@ -110,6 +110,7 @@ const AddCustomer = () => {
 
     useEffect(() => {
         if (isSuccess || csvSuceess) {
+            toast.success("Customer Import Succesfully")
 
             navigate('/customer')
         }

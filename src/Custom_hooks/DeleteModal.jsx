@@ -52,7 +52,8 @@ const useDeleteModal = () => {
     return {
         handleShow,
         ModalComponent,
-        isLoading
+        isLoading,
+        isSuccess
     };
 };
 

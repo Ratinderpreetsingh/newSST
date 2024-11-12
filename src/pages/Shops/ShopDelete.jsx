@@ -19,7 +19,7 @@ const useShopDeleteModal = () => {
     current_psg_id: "",
     update_psg_id: "",
   });
-  const [deleteShop, { isLoading }] = useDeleteShopMutation()
+  const [deleteShop, { isLoading, isSuccess }] = useDeleteShopMutation()
   const { data: shopList, error } = useGetAllShopsNameQuery((name = "")); // Removed the unnecessary parameter
   const [shopAssign] = useShopAssignMutation();
 
@@ -84,8 +84,8 @@ const useShopDeleteModal = () => {
           {/* Instructions */}
           <p className="mb-2">Are you sure you want to delete the  <strong>{shopname}</strong> and shop ID  <strong>{ids.current_psg_id}</strong>?</p>
           <h6 className=" small" style={{ color: '#dc3545' }}>
-  If you wish to delete the <strong>{shopname}</strong>, please assign the customer to another shop first.
-</h6>
+            If you wish to delete the <strong>{shopname}</strong>, please assign the customer to another shop first.
+          </h6>
 
 
           {/* Dropdown */}
@@ -148,7 +148,7 @@ const useShopDeleteModal = () => {
             checked={isChecked}
             onChange={() => setIsChecked(!isChecked)}
           />
-          <label htmlFor="delete" className="ml-2" style={{ marginLeft: '5px',color:'#dc3545' }}>
+          <label htmlFor="delete" className="ml-2" style={{ marginLeft: '5px', color: '#dc3545' }}>
             Are you sure you want to delete <strong>{shopname}</strong> with all Customers ?
           </label>
         </div>
@@ -171,6 +171,7 @@ const useShopDeleteModal = () => {
   return {
     handleShow,
     ModalComponent,
+    isSuccess
   };
 };
 

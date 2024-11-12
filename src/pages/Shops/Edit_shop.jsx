@@ -132,12 +132,18 @@ const Edit_shop = () => {
                                             {
                         fields.map((value, index) => {
                           return <div className="col-lg-2 col-md-4 col-6">
-                            <p className="mb-1">{value.title}
+                            <p className="mb-1 " style={{display:'flex',flexDirection:'column'}}>{value.title}
                               <div className="switch-container">
                                 <input type="checkbox" id={`switch${index + 1}`} name={value.name} checked={values[value.name]} onChange={() => setFieldValue(value.name, !values[value.name])} />
                                 <div className="switch-color"></div>
-                                <label htmlFor={`switch${index + 1}`}><i class="bi bi-x"></i></label>
-                              </div>
+                                <label htmlFor={`switch${index + 1}`}>
+              {/* Conditionally render the icon */}
+              {values[value.name] ? (
+                <i className="bi bi-check2"></i>
+              ) : (
+                <i className="bi bi-x"></i>
+              )}
+            </label>                              </div>
                               {touched[value.name] && errors[value.name] ? (
                                 <p style={{ color: '#be3134' }}>{errors[value.name]}</p>
                               ) : null}

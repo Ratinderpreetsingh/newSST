@@ -1,11 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import CheckboxModal from '../../Shops/TestDeleete';
 
 const Shops = ({shop,isLoading,handleSearch,handleStatus}) => {
     const navigate = useNavigate();
-    
+    const [selectedShop, setSelectedShop] = useState(null);
+
+  // This will trigger the modal and pass the shop details
+  const handleOpenModal = (shop) => {
+    setSelectedShop(shop);
+  };
+    const handleEdit = (id) => {
+      navigate(`/edit_shop/${id}`);
+    };
+
   return (
     <>
+   {selectedShop && (
+        <CheckboxModal
+          shop={selectedShop}
+          onClose={() => setSelectedShop(null)} // Close modal and reset selected shop
+        />
+      )}
     <div className="col-lg-6 mb-4">
               <div className="card">
                 <div className="card-header d-flex justify-content-between align-items-center">
@@ -133,12 +149,17 @@ const Shops = ({shop,isLoading,handleSearch,handleStatus}) => {
                                 <td>{value?.psg_id || '-'}</td>
                                 <td>{value.OwnerFName || '-'}</td>
                                 <td>
-                                  <button className="btn btn-sm btn-outline-danger p-1">
+                                  <button className="btn btn-sm btn-outline-danger p-1" 
+                                  onClick={() => handleEdit(value?.id)}
+                                  >
                                     <i className="bi bi-eye"></i>
                                   </button>
-                                  <button className="btn btn-sm btn-outline-danger p-1">
-                                    <i className="bi bi-trash3"></i>
-                                  </button>
+                                  <button
+                                  className="btn btn-sm btn-outline-danger p-1"
+                                  onClick={() => handleOpenModal(value)}
+                                >
+                                  <i className="bi bi-trash3"></i>
+                                </button>
                                 </td>
                               </tr>
                             })

@@ -3,11 +3,16 @@ import { useGetAllShopsQuery } from "../../redux/QueryAPi/shopApi";
 import Pagination from "../../Custom_hooks/Pagination";
 import useDebounce from "../../Custom_hooks/Debouncing";
 import { useNavigate } from "react-router-dom";
-import useShopDeleteModal from "./ShopDelete";
 import { ShopPath } from "../../Constant/Pages_Routes";
+import CheckboxModal from "./TestDeleete";
 
 const Shop = () => {
-  const { handleShow, ModalComponent } = useShopDeleteModal();
+  const [selectedShop, setSelectedShop] = useState(null);
+
+  // This will trigger the modal and pass the shop details
+  const handleOpenModal = (shop) => {
+    setSelectedShop(shop);
+  };
   const query = {
     sorted_by: "",
     status: "",
@@ -58,13 +63,20 @@ const Shop = () => {
 
   return (
     <>
-      <ModalComponent />
+      {selectedShop && (
+        <CheckboxModal
+          shop={selectedShop}
+          onClose={() => setSelectedShop(null)} // Close modal and reset selected shop
+        />
+      )}
       <div className="content-container">
         <h1>
-          <i className="bi bi-speedometer2"></i>Shops
+          <i className="bi bi-speedometer2"></i>Shops      
+
         </h1>
         <div className="container-area mt-5">
           <div className="row">
+            <div style={{display:'flex',justifyContent:'end'}}>
             <span
               onMouseEnter={(e) => {
                 e.target.style.color = "#FF5733"; // Change color on hover
@@ -75,17 +87,18 @@ const Shop = () => {
                 e.target.style.textDecoration = "none"; // Remove underline when mouse leaves
               }}
               style={{
-                textAlign: "right",
-                paddingRight: "33px",
-                cursor: "pointer",
+                cursor: "pointer", // Pointer cursor only on the text
                 fontSize: "16px",
                 fontWeight: "bold",
                 color: "#BE3134",
+                textAlign: "right", // Keep text right-aligned
+                whiteSpace: "nowrap", // Prevent text from wrapping if needed
               }}
-              onClick={()=>navigate(`/${ShopPath.SHOP_CUSTOMER}`)}
+              onClick={() => navigate(`/${ShopPath.SHOP_CUSTOMER}`)}
             >
               Show Customer By Shops
             </span>
+            </div>
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-header">
@@ -192,7 +205,7 @@ const Shop = () => {
                         <span
                           id="search-button"
                           className="btn btn-danger position-absolute end-0"
-                          // onClick={handleSearchClick}
+                        // onClick={handleSearchClick}
                         >
                           <i className="bi bi-search"></i>
                         </span>
@@ -266,7 +279,7 @@ const Shop = () => {
                                 </button>
                                 <button
                                   className="btn btn-sm btn-outline-danger p-1"
-                                  onClick={() => handleShow(shop)}
+                                  onClick={() => handleOpenModal(shop)}
                                 >
                                   <i className="bi bi-trash3"></i>
                                 </button>

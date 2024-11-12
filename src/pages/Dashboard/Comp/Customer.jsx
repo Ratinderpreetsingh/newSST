@@ -2,15 +2,23 @@
 // import Pagination from "../../../CustomUi/Pagination";
 
 import { useNavigate } from "react-router-dom";
+import { generatePDF } from "../../Customer/CustomerPdf";
+import useDeleteModal from "../../../Custom_hooks/DeleteModal";
+import { useEffect } from "react";
 
-const Customer = ({ customer, isLoading, handleQuery, queries, handleClear }) => {
+const Customer = ({ customer, isLoading, handleQuery, queries, handleClear,handleShow ,ModalComponent,deletLoading}) => {
 
 
   const navigate = useNavigate()
+  const handleEdit = (id) => {
+    navigate(`/view-edit-customer/${id}`)
+  }
+  
 
   return (
     <div className="content-container">
-
+ 
+    <ModalComponent/>
       {/* <h1><i className="bi bi-speedometer2 "></i>Customer</h1> */}
       <div className="container-area ">
         <div className="row">
@@ -136,7 +144,7 @@ const Customer = ({ customer, isLoading, handleQuery, queries, handleClear }) =>
                     </thead>
                     <tbody>
 
-                      {isLoading ? <td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Loading...</td>
+                      {isLoading || deletLoading ? <td style={{ textAlign: 'center', padding: '20px' }} colSpan="9">Loading...</td>
                         : customer?.data?.length < 1 ? <tr>
                           <td colSpan="9" style={{ textAlign: 'center' }}>
                             Not Found
@@ -159,9 +167,9 @@ const Customer = ({ customer, isLoading, handleQuery, queries, handleClear }) =>
                             <td>{value?.input_date}</td>
                             <td>{formattedDate}</td>
                             <td>
-                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-file-earmark-pdf"></i></button>
-                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-eye"></i></button>
-                              <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-trash3"></i></button>
+                            <button className="btn btn-sm btn-outline-danger p-1" onClick={() => generatePDF(value)}><i className="bi bi-file-earmark-pdf"></i></button>
+                            <button className="btn btn-sm btn-outline-danger p-1" onClick={() => handleEdit(value?.id)}><i className="bi bi-eye"></i></button>
+                            <button className="btn btn-sm btn-outline-danger p-1" onClick={() => handleShow(value)}><i className="bi bi-trash3"></i></button>
                             </td>
                           </tr>
                           }

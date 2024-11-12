@@ -425,6 +425,9 @@ display: none;
   transition: transform 0.5s cubic-bezier(0.34, 1.36, 0.2, 1),
     box-shadow 0.5s cubic-bezier(0.34, 1.36, 0.2, 1);
   z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .switch-container input {
@@ -452,7 +455,7 @@ display: none;
   width: 10px;
   height: 10px;
   font-family: "FontAwesome";
-  content: "\f00d";
+  /* content: "\f00d"; */
   font-weight: 900;
   font-size: 12px;
   border-radius: 50%;
@@ -467,7 +470,7 @@ display: none;
   width: 25px;
   height: 25px;
   font-family: "FontAwesome";
-  content: "\f00c";
+  /* content: "\f00c"; */
   background: white;
   border-radius: 50%;
   opacity: 0;
@@ -476,13 +479,13 @@ display: none;
   align-items: center;
 }
 
-.switch-container input:checked + .switch-color + label::before {
+/* .switch-container input:checked + .switch-color + label::before {
   opacity: 0;
 }
 
 .switch-container input:checked + .switch-color + label::after {
   opacity: 1;
-}
+} */
 
 /*Input Label*/
 .form-label-group {
