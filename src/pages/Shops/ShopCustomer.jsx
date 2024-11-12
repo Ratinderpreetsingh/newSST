@@ -154,10 +154,10 @@ const ShopCustomer = () => {
                         <th>#</th>
                         <th>Shop Name</th>
                         <th>PSG ID</th>
+                       <th>Email</th>
                      
                         <th>Phone Number</th>
                 
-                       <th>View Customers</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -170,10 +170,11 @@ const ShopCustomer = () => {
                             <td>{serialNumber}</td>
                             <td>{shop?.m_shop_name_display || "-"}</td>
                             <td>{shop?.psg_id || "-"}</td>
+                            <td>{shop?.email || '-'}</td>
                             <td>{shop?.phone_number || "-"}</td>
-                            <td style={{paddingLeft:'55px'}}><button className="btn btn-sm btn-outline-danger p-1" onClick={()=>handleViewCutomer(shop?.id)}><i className="bi bi-eye"></i></button> </td>
 
                             <td>
+                            <button className="btn btn-sm btn-outline-danger p-1" onClick={()=>handleViewCutomer(shop?.id)}><i className="bi bi-eye"></i></button>
                               <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-cart"></i></button>
                               <button className="btn btn-sm btn-outline-danger p-1"><i className="bi bi-bar-chart"></i></button>
                               <button className="btn btn-sm btn-outline-danger p-1" onClick={() => handleEdit(shop?.id)}><i className="bi bi-pencil-square"></i></button>

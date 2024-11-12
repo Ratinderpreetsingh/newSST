@@ -11,15 +11,15 @@ import { toast } from "react-toastify";
 const useShopDeleteModal = () => {
   const [show, setShow] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [shopname,setShopName]=useState('')
-  const [shopID,setShopID]=useState('')
+  const [shopname, setShopName] = useState('')
+  const [shopID, setShopID] = useState('')
 
 
   const [ids, setIds] = useState({
     current_psg_id: "",
     update_psg_id: "",
   });
-const [deleteShop,{isLoading}]=useDeleteShopMutation()
+  const [deleteShop, { isLoading }] = useDeleteShopMutation()
   const { data: shopList, error } = useGetAllShopsNameQuery((name = "")); // Removed the unnecessary parameter
   const [shopAssign] = useShopAssignMutation();
 
@@ -63,10 +63,10 @@ const [deleteShop,{isLoading}]=useDeleteShopMutation()
     if (isChecked) {
       console.log("Delete confirmed");
       // Perform delete action here or trigger an API call
-      await  deleteShop(shopID)
+      await deleteShop(shopID)
       toast.success("Shop Delete successfully")
 
-          handleClose();
+      handleClose();
     } else {
       console.error("Please confirm the deletion by checking the box");
     }
@@ -78,38 +78,50 @@ const [deleteShop,{isLoading}]=useDeleteShopMutation()
         <Modal.Title>Delete Confirmation</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div className="d-flex gap-3 justify-content-between">
-        {/* <Form.Control
-            required
-            type="text"
-            placeholder="First name"
-            defaultValue="Mark"
-            className="form-control !disable"
-          />
-      to */}
-          <Form.Select
-            value={ids.update_psg_id}
-            onChange={handleUpdate}
-            aria-label="Select Shop to Assign"
-          >
-            <option value="" disabled selected>
-              Select
-            </option>{" "}
-            {/* Default option */}
-            {!isChecked &&shopList?.data?.map((shop, index) => (
-              <option disabled={isChecked} key={shop.psg_id} value={shop.psg_id}>
-                {shop?.shop_name}
+        <div className="d-flex flex-column  p-3 border rounded-3 shadow-sm">
+          {/* Heading */}
+
+          {/* Instructions */}
+          <p className="mb-2">Are you sure you want to delete the  <strong>{shopname}</strong> and shop ID  <strong>{ids.current_psg_id}</strong>?</p>
+          <h6 className=" small" style={{ color: '#dc3545' }}>
+  If you wish to delete the <strong>{shopname}</strong>, please assign the customer to another shop first.
+</h6>
+
+
+          {/* Dropdown */}
+          <div className="mt-3">
+            <Form.Select
+              value={ids.update_psg_id}
+              onChange={handleUpdate}
+              aria-label="Select Shop to Assign"
+              className="form-select-lg"
+            >
+              <option value="" disabled selected>
+                Select a Shop to Assign
               </option>
-            ))}
-          </Form.Select>
-          <Button
-            variant="danger"
-            onClick={handleAssign}
-            disabled={isChecked}
-          >
-            Assign
-          </Button>
+              {/* Loop through the shop list and render options */}
+              {!isChecked &&
+                shopList?.data?.map((shop, index) => (
+                  <option key={shop.psg_id} value={shop.psg_id}>
+                    {shop?.shop_name}
+                  </option>
+                ))}
+            </Form.Select>
+          </div>
+
+          {/* Assign Button */}
+          <div className="mt-4">
+            <Button
+              variant="danger"
+              onClick={handleAssign}
+              disabled={isChecked}
+              className={` ${isChecked ? 'opacity-50' : ''}`}
+            >
+              Assign Shop
+            </Button>
+          </div>
         </div>
+
         <div className="text-center my-3">
           <div className="text-muted d-flex justify-content-center align-items-center gap-2">
             <div
@@ -136,9 +148,8 @@ const [deleteShop,{isLoading}]=useDeleteShopMutation()
             checked={isChecked}
             onChange={() => setIsChecked(!isChecked)}
           />
-          <label htmlFor="delete" className="ml-2" style={{marginLeft:'5px'}}>
-            Are you sure you want to delete <strong>{shopname}</strong> with ID:
-            <strong>{ids.current_psg_id}</strong>?
+          <label htmlFor="delete" className="ml-2" style={{ marginLeft: '5px',color:'#dc3545' }}>
+            Are you sure you want to delete <strong>{shopname}</strong> with all Customers ?
           </label>
         </div>
       </Modal.Body>
@@ -151,7 +162,7 @@ const [deleteShop,{isLoading}]=useDeleteShopMutation()
           onClick={handleConfirmDelete}
           disabled={!isChecked}
         >
-          {isLoading?'Delting...':'Delete'}
+          {isLoading ? 'Delting...' : 'Delete'}
         </Button>
       </Modal.Footer>
     </Modal>
